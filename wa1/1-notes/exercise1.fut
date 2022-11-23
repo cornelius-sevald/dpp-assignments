@@ -22,4 +22,4 @@ def process_idx [n] (xs: [n]i32) (ys: [n]i32): (i32,i64) =
                  (zip (map i32.abs (map2 (-) xs ys))
                       (iota n))
 
-entry test_process_idx = test_process
+entry test_process_idx = process_idx
