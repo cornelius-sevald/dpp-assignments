@@ -5,9 +5,6 @@ date-meta: ???
 lang: en-GB
 header-includes:
   - \usepackage{placeins}
-  - \usepackage{fancyvrb}
-  - \newcommand{\assoc}{\oplus}
-  - \newcommand{\conj}{\vee}
 ---
 
 DPP Assignment 1
@@ -120,67 +117,3 @@ input size grows, which would suggest that the work-efficient algorithm has a
 better asymptotic runtime (or at least better constants w.r.t scaling).
 
 They are both, however, much slower than the built-in scan.
-
-Task 3
-------
-
-### Exercise 3.1
-
-We inline the definitions of $\assoc'$ in the following two expressions:
-
-\begin{align}
-    \left( (v_1,f_1) \assoc' (v_2,f_2) \right) \assoc' (v_3,f_3)         \\
-    (v_1,f_1)        \assoc' \left( (v_2,f_2)  \assoc' (v_3,f_3) \right)
-\end{align}
-
-\vspace{1em}
-
-\begin{Verbatim}[frame=single
-                ,framesep=2mm
-                ,label=$(1)$
-                ,labelposition=topline
-                ,commandchars=\\\{\},
-                ,codes={\catcode`$=3\catcode`^=7}]
-(if f3 then v3 else
-       (if f2 then v2 else v1 $\assoc$ v2) $\assoc$ v3
-,(f1 $\conj$ f2) $\conj$ f3)
-\end{Verbatim}
-
-\vspace{1em}
-
-\begin{Verbatim}[frame=single
-                ,framesep=2mm
-                ,label=$(2)$
-                ,labelposition=topline
-                ,commandchars=\\\{\},
-                ,codes={\catcode`$=3\catcode`^=7}]
-(if f2 $\conj$ f3 then (if f3 then v3 else v2 $\assoc$ v3)
-            else v1 $\assoc$ (if f3 then v3 else v2 $\assoc$ v3)
-,f1 $\conj$ (f2 $\conj$ f3))
-\end{Verbatim}
-
-As the $\conj$ operator is associative it is trivial that
-$(f_1 \conj f_2) \conj f_3 = f_1 \conj (f_2 \conj f_3)$ i.e. the second elements
-of (1) and (2) are equal.
-
-For the first elements, we enumerate all of the possible cases. One thing to
-notice is that $f_1$ does not show up in the first elements of $(1)$ and $(2)$,
-so we only have to enumerate four cases.
-
-\begin{enumerate}
-    \item $f_2$ and $f_3$ are both \texttt{false}: \\
-        In this case, for (1) we get $(v_1 \assoc v_2) \assoc v_3$
-        and for (2) we get $v_1 \assoc (v_2 \assoc v_3)$.
-        As $\assoc$ is associative, these are equal.
-    \item $f_2$ is \texttt{true} and $f_3$ is \texttt{false}: \\
-        For (1) the inner if-statement holds and we get $v_2 \assoc v_3$.
-        For (2) the outer if-statement holds and the innder doesn't,
-        so we also get $v_2 \assoc v_3$.
-    \item $f_2$ is \texttt{false} and $f_3$ is \texttt{true}: \\
-        For (1) the outer if-statement holds and we get $v_3$.
-        For (2) the outer and inner if-statements hold and we also get $v_3$.
-    \item $f_2$ and $f_3$ are both \texttt{true}: \\
-        Just like in case 3,
-        for (1) the outer if-statement holds so we get $v_3$ and
-        for (2) the outer and inner if-statements hold and we also get $v_3$.
-\end{enumerate}
