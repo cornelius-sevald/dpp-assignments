@@ -5,6 +5,8 @@ date-meta: ???
 lang: en-GB
 header-includes:
   - \usepackage{placeins}
+  - \newcommand{\assoc}{\oplus}
+  - \newcommand{\conj}{\vee}
 ---
 
 DPP Assignment 1
@@ -117,3 +119,38 @@ input size grows, which would suggest that the work-efficient algorithm has a
 better asymptotic runtime (or at least better constants w.r.t scaling).
 
 They are both, however, much slower than the built-in scan.
+
+
+Task 3
+------
+
+### Exercise 3.1
+
+In the definition of $\assoc'$ we substitute the values $f_1$ and $v_1$ with
+\texttt{0} and \texttt{false} respectively:
+
+\begin{align*}
+     & \texttt{
+        (if $f_2$ then $v_2$ else $0 \assoc v_2$, $\texttt{false} \conj f_2$)
+    }
+    \\
+    \intertext{We use the fact that $0$ is the neutral element of $\assoc$.}
+    =& \texttt{
+        (if $f_2$ then $v_2$ else $v_2$, $\texttt{false} \conj f_2$)
+    }
+    \\
+    \intertext{
+        And the fact that \texttt{false} is the neutral element of $\conj$.
+    }
+    =& \texttt{
+        (if $f_2$ then $v_2$ else $v_2$, $f_2$)
+    }
+    \\
+    \intertext{
+        Finally we get rid of the redundant if-statement.
+    }
+    =& \texttt{
+        ($v_2$, $f_2$)
+    }
+    \\
+\end{align*}
