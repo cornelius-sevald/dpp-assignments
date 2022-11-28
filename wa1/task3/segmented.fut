@@ -22,7 +22,7 @@ def segreduce [n] 't (op: t -> t -> t) (ne: t)
   let inds      = map (\x -> x-1) indsp1
   let k         = indsp1[n-1]
   let scan_res  = segscan op ne arr
-  in spread k ne inds scan_res
+  in scatter (replicate k ne) inds scan_res
 
 entry test_segscan [n] (xs: [n]i32) (fs: [n]bool) : []i32 =
   segscan (+) 0 (zip xs fs)

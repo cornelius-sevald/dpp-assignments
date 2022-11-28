@@ -11,9 +11,8 @@ matplotlib.use('Agg') # For headless use
 import matplotlib.pyplot as plt
 
 progname = sys.argv[1]
-plotname = sys.argv[2]
-benchmarks = sys.argv[3].split(' ')
-data_sizes = list(map(int, sys.argv[4:]))
+benchmarks = sys.argv[2].split(' ')
+data_sizes = list(map(int, sys.argv[3:]))
 
 fn = '{}-opencl.json'.format(progname)
 bench_data = json.load(open(fn))
@@ -43,4 +42,4 @@ fig.tight_layout()
 #plt.show()
 
 plt.rc('text')
-plt.savefig('{}.pdf'.format(plotname), bbox_inches='tight')
+plt.savefig('{}.pdf'.format(progname), bbox_inches='tight')
