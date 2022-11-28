@@ -154,3 +154,23 @@ In the definition of $\assoc'$ we substitute the values $f_1$ and $v_1$ with
     }
     \\
 \end{align*}
+
+### Exercise 3.2
+
+The benchmarks of segmented scan and reduce are shown below, compared with
+normal scan and reduce. The benchmarks were done on the `gpu04-diku-apl` machine
+using openCL. The segmented scan/reduce were with addition over a random array
+with a random boolean flag array meaning the average segment length is very short
+compared to what you would expect from a realistic workload, which might impact
+the preformance.
+
+\FloatBarrier
+
+![Benchmarks of segmented scan and reudce](figures/segmented.pdf){ height=256px }
+
+\FloatBarrier
+
+As can be seen from the benchmarks, segmented scan is only a little slower than
+normal scan, which is to be expected from the more complicated operator.
+Segmented reduce is much slower than normal reduce as segmented reduce is built
+on top of segmented scan with additional bookkeeping to collect the results.
