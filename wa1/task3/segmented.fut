@@ -28,7 +28,7 @@ entry test_segscan [n] (xs: [n]i32) (fs: [n]bool) : []i32 =
   segscan (+) 0 (zip xs fs)
 entry test_segreduce [n] (xs: [n]i32) (fs: [n]bool) : []i32 =
   segreduce (+) 0 (zip xs fs)
-entry test_scan [n] (xs: [n]i32) (fs: [n]bool) : []i32 =
+entry test_scan [n] (xs: [n]i32) (_: [n]bool) : []i32 =
   scan (+) 0 xs
-entry test_reduce [n] (xs: [n]i32) (fs: [n]bool) : i32 =
+entry test_reduce [n] (xs: [n]i32) (_: [n]bool) : i32 =
   reduce (+) 0 xs
