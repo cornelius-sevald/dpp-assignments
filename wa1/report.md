@@ -166,7 +166,7 @@ the preformance.
 
 \FloatBarrier
 
-![Benchmarks of segmented scan and reudce](figures/segmented.pdf){ height=256px }
+![Benchmarks of segmented scan and reduce](figures/segmented.pdf){ height=256px }
 
 \FloatBarrier
 
