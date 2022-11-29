@@ -1,6 +1,15 @@
 import "lib/github.com/diku-dk/sorts/radix_sort"
 import "segmented"
 
+-- ==
+-- entry: test_my_reduce_by_index test_reduce_by_index
+-- random input { [100]i64      [100]i32      }
+-- random input { [1000]i64     [1000]i32     }
+-- random input { [10000]i64    [10000]i32    }
+-- random input { [100000]i64   [100000]i32   }
+-- random input { [1000000]i64  [1000000]i32  }
+-- random input { [10000000]i64 [10000000]i32 }
+
 def my_reduce_by_index 'a [m] [n]
 		       (dest: *[m]a)
 		       (f: a -> a -> a) (ne: a)
@@ -15,3 +24,10 @@ def my_reduce_by_index 'a [m] [n]
   let redind      = zip (reduced :> [N]a) (uniq :> [N]i64)
   let result      = map (\(x,i) -> f x dest[i]) redind
   in scatter dest (uniq :> [N]i64) result
+
+entry test_my_reduce_by_index [n] (is:  [n]i64)
+                                  (as:  [n]i32) : [100]i32 =
+  my_reduce_by_index (replicate 100 0) (+) 0 is as
+entry test_reduce_by_index [n] (is:  [n]i64)
+                               (as:  [n]i32) : [100]i32 =
+  reduce_by_index (replicate 100 0) (+) 0 is as

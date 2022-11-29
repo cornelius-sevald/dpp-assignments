@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 
 progname = sys.argv[1]
 benchmarks = sys.argv[2].split(' ')
-data_sizes = list(map(int, sys.argv[3:]))
+types = ' '.join(map(lambda s: "[{0}]" + s, sys.argv[3].split()))
+data_sizes = list(map(int, sys.argv[4:]))
 
 fn = '{}-opencl.json'.format(progname)
 bench_data = json.load(open(fn))
@@ -20,7 +21,7 @@ bench_data = json.load(open(fn))
 runtimes = dict()
 for bench in benchmarks:
     measurements = bench_data['{}.fut:{}'.format(progname,bench)]['datasets']
-    runtimes[bench] = list([np.mean(measurements['[{}]i32 [{}]bool'.format(n,n)]['runtimes']) / 1000
+    runtimes[bench] = list([np.mean(measurements[types.format(n)]['runtimes']) / 1000
                             for n in data_sizes ])
 
 fig, ax1 = plt.subplots()
