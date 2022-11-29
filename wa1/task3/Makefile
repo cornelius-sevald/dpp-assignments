@@ -11,10 +11,10 @@ all: plot
 plot: bench_segmented.pdf bench_reduce_by_index.pdf
 
 bench_segmented.pdf: benchmark
-	python plot.py $(SEG_PROG) "$(SEG_BENCHMARKS)" "i32 bool" $(SEG_SIZES)
+	python plot.py $(SEG_PROG) "$(SEG_BENCHMARKS)" "i32 bool" $(SIZES)
 
 bench_reduce_by_index.pdf: benchmark
-	python plot.py $(RBI_PROG) "$(RBI_BENCHMARKS)" "i64 i32" $(SEG_SIZES)
+	python plot.py $(RBI_PROG) "$(RBI_BENCHMARKS)" "i64 i32" $(SIZES)
 
 benchmark: $(SEG_PROG)-opencl.json $(RBI_PROG)-opencl.json
 
