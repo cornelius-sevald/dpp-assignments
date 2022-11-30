@@ -1,5 +1,5 @@
 import "lib/github.com/diku-dk/sorts/radix_sort"
-import "segmented"
+import "../segmented/segmented"
 
 -- ==
 -- entry: test_my_reduce_by_index test_reduce_by_index
