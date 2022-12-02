@@ -98,3 +98,14 @@ entry tui_step (abs_temp: f32) (samplerate: f32) (s: state) : state =
   let spins = map (map (.1)) s.cells
   let (rngs', spins') = step abs_temp samplerate rngs spins
   in {cells=map (uncurry zip) (zip rngs' spins')}
+
+-- ==
+-- entry: test_ising
+-- input { 100i64 }
+-- input { 1000i64 }
+-- input { 10000i64 }
+-- input { 100000i64 }
+-- input { 1000000i64 }
+entry test_ising (N: i64) : [][]spin =
+  let s = f32.i64 N |> f32.sqrt |> i64.f32
+  in main 0.5f32 0.1f32 s s 10
