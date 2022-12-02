@@ -30,23 +30,48 @@ let rand = rand_f32.rand (0f32, 1f32)
 -- sized array of RNG states.
 let random_grid (seed: i32) (h: i64) (w: i64)
               : ([h][w]rng_engine.rng, [h][w]spin) =
-  ...
+  let init_rng      = rng_engine.rng_from_seed [seed]
+  let rngs          = rng_engine.split_rng (h*w) init_rng
+  let (rngs',spins) = map (rand_i8.rand (0i8, 1i8)) rngs |> unzip
+  -- turn zeros into minus ones
+  let spins'        = map (\c -> c*2-1) spins
+  in (unflatten h w rngs', unflatten h w spins')
 
 -- Compute $\Delta_e$ for each spin in the grid, using wraparound at
 -- the edges.
 let deltas [h][w] (spins: [h][w]spin): [h][w]i8 =
-  ...
+  -- Get the neighbors by rotating the 'spin' array
+  let uSpins = rotate (-1) spins
+  let dSpins = rotate   1  spins
+  let lSpins = map (rotate (-1)) spins
+  let rSpins = map (rotate   1)  spins
+  in map5 (map5 (\c u d l r -> 2*c*(u+d+l+r))) spins uSpins dSpins lSpins rSpins
 
 -- The sum of all deltas of a grid.  The result is a measure of how
 -- ordered the grid is.
 let delta_sum [h][w] (spins: [w][h]spin): i32 =
-  ...
+  flatten spins |> reduce (+) 0 |> i32.i8
 
 -- Take one step in the Ising 2D simulation.
 let step [h][w] (abs_temp: f32) (samplerate: f32)
                 (rngs: [h][w]rng_engine.rng) (spins: [h][w]spin)
               : ([h][w]rng_engine.rng, [h][w]spin) =
-  ...
+  -- Generate random numbers
+  let rngs_f = flatten rngs
+  let (rngs_f',  as) = map rand rngs_f  |> unzip
+  let (rngs_f'', bs) = map rand rngs_f' |> unzip
+  -- The random numbers where flattened, we need to un-flatten them again
+  let as' = unflatten h w as
+  let bs' = unflatten h w bs
+  -- Calculate the deltas and cast them to floats
+  let ds = deltas spins |> map (map f32.i8)
+  -- The 'update_cell' function updates a single cell
+  let update_cell p t c a b d =
+    if a < p && (d < (-d) || b < f32.exp ((-d) / t))
+    then -1*c else c
+  -- Compute the new spins
+  let new_spins = map4 (map4 (update_cell samplerate abs_temp)) spins as' bs' ds
+  in (unflatten h w rngs_f'', new_spins)
 
 -- | Just for benchmarking.
 let main (abs_temp: f32) (samplerate: f32)
