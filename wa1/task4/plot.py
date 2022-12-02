@@ -27,7 +27,6 @@ multicore_measurements = multicore_json['{}.fut:{}'.format(progname,benchmark)][
 c_measurements = c_json['{}.fut:{}'.format(progname,benchmark)]['datasets']
 
 measurements_key = '#{0} ("{1}i64")'
-print(str(opencl_measurements.keys()))
 opencl_runtimes = list([ np.mean(opencl_measurements[measurements_key.format(i,n)]['runtimes']) / 1000
                          for i,n in enumerate(data_sizes) ])
 multicore_runtimes = list([ np.mean(multicore_measurements[measurements_key.format(i,n)]['runtimes']) / 1000
@@ -44,6 +43,7 @@ ax1.set_ylabel('Runtime (ms)', color='k')
 ax1.tick_params('y', colors='k')
 plt.xticks(data_sizes, rotation='vertical')
 ax1.semilogx()
+ax1.semilogy()
 
 plots = multicore_runtime_plot + opencl_runtime_plot + c_runtime_plot
 labels = [p.get_label() for p in plots]

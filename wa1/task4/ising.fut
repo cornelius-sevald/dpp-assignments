@@ -106,6 +106,7 @@ entry tui_step (abs_temp: f32) (samplerate: f32) (s: state) : state =
 -- input { 10000i64 }
 -- input { 100000i64 }
 -- input { 1000000i64 }
+-- input { 10000000i64 }
 entry test_ising (N: i64) : [][]spin =
   let s = f32.i64 N |> f32.sqrt |> i64.f32
   in main 0.5f32 0.1f32 s s 10
