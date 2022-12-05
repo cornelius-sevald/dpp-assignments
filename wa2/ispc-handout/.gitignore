@@ -4,3 +4,4 @@
 !.gitignore
 !timing.h
 !Makefile
+!bench.sh

@@ -3,20 +3,27 @@
 # sequential execution for some targets.  I am not certain whether
 # this is an ISPC bug.
 
+N_RUNS?=10
 ISPC_TARGET?=sse4
 ISPC=ispc -O3 --target=$(ISPC_TARGET)
 CC=gcc
 CFLAGS=-O3 -std=c99 -Wall -Wextra -pedantic
 PROGRAMS=mandelbrot sum relax filter scan pack rle
 
-.PHONY: all run
+.PHONY: all run bench
 
 all: $(PROGRAMS)
 
 run: $(PROGRAMS) $(PROGRAMS:%=run_%)
 
+bench: $(PROGRAMS) $(PROGRAMS:%=bench_%)
+
 run_%: % %.c
+	echo $*
 	./$*
+
+bench_%: % %.c
+	./bench.sh -n $(N_RUNS) $*
 
 $(PROGRAMS): %: %.c %.o %.h timing.h
 	$(CC) -o $@ $(CFLAGS) $*.c $*.o
