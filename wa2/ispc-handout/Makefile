@@ -5,9 +5,9 @@
 
 N_RUNS?=10
 ISPC_TARGET?=sse4
-ISPC=ispc -O3 --target=$(ISPC_TARGET)
+ISPC=ispc -O3 --target=$(ISPC_TARGET) --pic
 CC=gcc
-CFLAGS=-O3 -std=c99 -Wall -Wextra -pedantic
+CFLAGS=-O3 -std=c99 -Wall -Wextra -pedantic -fPIC
 PROGRAMS=mandelbrot sum relax filter scan pack rle
 
 .PHONY: all run bench
