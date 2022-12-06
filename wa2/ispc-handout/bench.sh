@@ -44,7 +44,9 @@ function bench () {
 
 function process () {
   infile="$1"
-  datamash -t"$DATA_SEP" --sort --group 1 mean 2 <"$infile" | column -s "$DATA_SEP" -t -N "type,avg. runtime (μs)"
+  {   printf "type%savg. runtime (μs)\n" "$DATA_SEP";
+      datamash -t"$DATA_SEP" --sort --group 1 mean 2 <"$infile";
+  } | column -s "$DATA_SEP" -t
 }
 
 function main () {
