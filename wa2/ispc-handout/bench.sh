@@ -38,7 +38,7 @@ function bench () {
   outfile="$3"
   for _ in $(seq "$runs")
   do
-    ./"$prog" | sed 's/ *microseconds//' | sed 's/: */:/' | tail -n+1
+    ./"$prog" | sed 's/ *microseconds//' | sed 's/: */:/'
   done > "$outfile"
 }
 
