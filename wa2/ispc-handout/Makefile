@@ -10,20 +10,15 @@ CC=gcc
 CFLAGS=-O3 -std=c99 -Wall -Wextra -pedantic -fPIC
 PROGRAMS=mandelbrot sum relax filter scan pack rle
 
-.PHONY: all run bench
+.PHONY: all run
 
 all: $(PROGRAMS)
 
 run: $(PROGRAMS) $(PROGRAMS:%=run_%)
 
-bench: $(PROGRAMS) $(PROGRAMS:%=bench_%)
-
 run_%: % %.c
 	echo $*
 	./$*
-
-bench_%: % %.c
-	./bench.sh -n $(N_RUNS) $*
 
 $(PROGRAMS): %: %.c %.o %.h timing.h
 	$(CC) -o $@ $(CFLAGS) $*.c $*.o
