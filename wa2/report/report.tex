@@ -11,6 +11,93 @@
 
 \section*{Task 1}
 
+All code can be found in the \verb|src.zip| archive. To compile the code,
+run \verb|make| in the \verb|ispc-handout/| folder. To benchmark the programs,
+run \verb|make run| instead.
+
+All benchmarks were done on the \verb|gpu04-diku-apl| machine with the
+\verb|sse4| target. I've also added the \verb|--pic| flag to the
+\verb|ispc| compiler and \verb|-fPIC| flag to \verb|CFLAGS|. I don't think they
+have any real impact on preformance but i could not use the \verb|ispc print|
+function otherwise.
+
+All benchmarks were done over 10000 runs by changing the \verb|num_runs|
+variable in \verb|timing.h|.
+
+\subsection*{Prefix sum}
+
+\noindent
+The ISPC program is shown in~\cref{lst:scan}.
+
+The idea is to use \verb|exclusive_scan_add| and manually add the \verb|x| value
+to make it and inclusive scan. Then, the scanned value of the final program is
+broadcasted to all others and added to \verb|acc|.
+
+The results of the benchmarks are shown below:
+\begin{Verbatim}
+C:      91 microseconds
+ISPC:   50 microseconds
+\end{Verbatim}
+The ISPC version has a speedup of \textapprox 1.82x.
+
+\subsection*{Removing neighboring duplicates}
+
+\noindent
+The ISPC program is shown in~\cref{lst:pack}.
+
+The program uses \verb|rotate| to compare neighboring elements and makes sure
+the element of the first program is compared with the final element of the last
+iteration (\verb|cur|) via \verb|insert|. To make sure that \verb|cur| is
+distinct in the very first iteration, it initialized to the first input values
+XOR'ed with 1. The program avoids conditional writes just like the optimized
+\verb|filter| program.
+
+The results of the benchmarks are shown below:
+\begin{Verbatim}
+C:      404 microseconds
+ISPC:   168 microseconds
+\end{Verbatim}
+The ISPC version has a speedup of \textapprox 2.4x.
+
+\subsection*{Run-length encoding}
+
+\noindent
+The ISPC program is shown in~\cref{lst:rle}.
+
+The program has two cases. Either all elements are the same in which case
+\verb|count| is increased by one for each element. In the case where not all
+elements are the same, we loop over each program in the gang and essentially
+just do as the sequential C program does. Finally we remember to write the final
+value and count after the final iteration.
+
+The results of the benchmarks are shown below:
+\begin{Verbatim}
+C:      75 microseconds
+ISPC:   44 microseconds
+\end{Verbatim}
+The ISPC version has a speedup of \textapprox 1.7x.
+
+\begin{listing}[p]
+    \centering
+    \inputminted{c}{../ispc-handout/scan.ispc}
+    \caption{\texttt{scan.iscp} program.}
+    \label{lst:scan}
+\end{listing}
+\begin{listing}[p]
+    \centering
+    \inputminted{c}{../ispc-handout/pack.ispc}
+    \caption{\texttt{pack.iscp} program.}
+    \label{lst:pack}
+\end{listing}
+\begin{listing}[p]
+    \centering
+    \inputminted{c}{../ispc-handout/rle.ispc}
+    \caption{\texttt{rle.iscp} program.}
+    \label{lst:rle}
+\end{listing}
+
+\FloatBarrier
+
 \section*{Task 2}
 
 Let $H = (max^s) \times h_2 \times h_3 \times h_4$ where $h_2 , h_3 , h_4$ are

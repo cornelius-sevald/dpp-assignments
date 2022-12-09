@@ -1,3 +1,4 @@
+\usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{graphicx}
 \graphicspath{ {./figures/} }
@@ -9,9 +10,18 @@
 \usepackage{hyperref}
 \usepackage{cleveref}
 \usepackage{booktabs}
+\usepackage{fancyvrb}
 \usepackage{minted}
 \usepackage{csquotes}
 
+\setminted[c]{
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+linenos
+}
+
+\renewcommand{\textapprox}{\raisebox{0.5ex}{\texttildelow}}
 \newcommand{\assoc}{\oplus}
 \newcommand{\conj}{\wedge}
 \newcommand{\disj}{\vee}
