@@ -9,4 +9,109 @@
 \date{2022-12-09}
 \maketitle
 
+\section*{Task 1}
+
+\section*{Task 2}
+
+Let $H = (max^s) \times h_2 \times h_3 \times h_4$ where $h_2 , h_3 , h_4$ are
+to be determined. We also need to determine $\otimes'_1 , \otimes'_2 ,
+\otimes'_3$ and $\otimes'_4$.
+
+First we need to show that the following is true:
+
+\begin{equation}\label{eq:max_cross}
+    max^s\ (xs \crossop_{+} ys) = max\ xs + max\ ys
+\end{equation}
+where $max$ is defined as $max^s$ but over lists instead of sets.
+
+\begin{proof}
+    From the definition of $\crossop_{\oplus}$ and $max^s$ we have
+    \[
+        max^s\ \left(
+            [x_1, \ldots, x_n] \crossop_{+} [y_1, \ldots, y_m]
+        \right) = x_i + y_j
+    \]
+    where $1 \leq i \leq n$ and $1 \leq j \leq m$ are chosen such that they
+    maximize $x_i + y_j$. As maximizing a sum of two numbers is the same as
+    maximizing the two individual numbers, we can conclude that
+    $x_i = max\ [x_1, \ldots, x_n]$ and $y_j = max\ [y_1, \ldots, y_m]$.
+    Substituting $x_i$ and $y_j$ in the formula above we get
+    $max^s\ (xs \crossop_{+} ys) = max\ xs + max\ ys$.
+\end{proof}
+
+We can now derive $H$ and $\otimes'_1 , \otimes'_2 , \otimes'_3 , \otimes'_4$.
+We start with $\otimes'_1$:
+\begin{align*}
+      & max^s\ ((s_1,i_1,t_1,d_1) \otimes_1 (s_2,i_2,t_2,d_2))          \\
+    = & \quad \{\ \text{Def. of $\otimes_1$}\ \}                        \\
+      & max^s\ (s_1 \cup s_2 \cup (t_1 \crossop_{+} i_2))                \\
+    = & \quad \{\ \text{Def. of $max^s$}\ \}                            \\
+      & max^s\ s_1 \maxop mas^s s_2 \maxop max^s\ (t_1 \crossop_{+} i_2) \\
+    = & \quad \{\ \eqref{eq:max_cross}\ \}                              \\
+      & max^s\ s_1 \maxop mas^s s_2 \maxop max\ t_1 + max\ i_2          \\
+\end{align*}
+Matching the last part with:
+\[
+    (max^s\ s_1, h_2\ i_1, h_3\ t_1, h_4\ d_1) \otimes'_1
+    (max^s\ s_2, h_2\ i_2, h_3\ t_2, h_4\ d_2)
+\]
+gives
+\begin{align*}
+    & h_2 = h_3 = max \\
+    & (s_1, i_1, t_1, d_1) \otimes'_1
+      (s_2, i_2, t_2, d_2)
+    = s_1 \maxop s_2 \maxop (t_1 + i_2)
+\end{align*}
+
+We now derive $\otimes'_2$:
+\begin{align*}
+      & max\ ((s_1,i_1,t_1,d_1) \otimes_2 (s_2,i_2,t_2,d_2))    \\
+    = & \quad \{\ \text{Def. of $\otimes_2$}\ \}                \\
+      & max\ (i_1 \concat (d_1 +) \map i_2)                     \\
+    = & \quad \{\ \text{Def. of $max$}\ \}                      \\
+      & max\ i_1 \maxop max\ ((d_1 +) \map i_2)                 \\
+    = & \quad \{\ \text{
+            $max\ (f \map xs) = f\ (max\ xs)$
+            for non-decreasing $f$
+        }\ \}                                                   \\
+      & max\ i_1 \maxop (d_1 + max\ i_2)                        \\
+    = & \quad \{\ \text{Def. of $id$}\ \}                       \\
+      & max\ i_1 \maxop (id\ d_1 + max\ i_2)                    \\
+\end{align*}
+Matching the last part with:
+\[
+    (max^s\ s_1, h_2\ i_1, h_3\ t_1, h_4\ d_1) \otimes'_2
+    (max^s\ s_2, h_2\ i_2, h_3\ t_2, h_4\ d_2)
+\]
+gives
+\begin{align*}
+    & h_2 = max \\
+    & h_4 = id  \\
+    & (s_1, i_1, t_1, d_1) \otimes'_2
+      (s_2, i_2, t_2, d_2)
+    = i_1 \maxop (d_1 + i_2)
+\end{align*}
+We have now derived $H = (max^s) \times (max) \times (max) \times (id)$.
+We won't show the derivation of $\otimes'_3$ and $\otimes'_4$ but their
+definitions are shown below:
+
+\begin{align*}
+    (s_1, i_1, t_1, d_1)
+    \otimes'_3
+    (s_2, i_2, t_2, d_2)
+    &= (d_2 + t_1) \maxop t_2   \\
+    (s_1, i_1, t_1, d_1)
+    \otimes'_4
+    (s_2, i_2, t_2, d_2)
+    &= d_1 + d_2                \\
+\end{align*}
+
+Finally, we show that $h_j \compose f'_j = id$ for $j = 1, \ldots , 4$:
+\begin{alignat*}{2}
+    (h_1 \compose f_1)\ x &= max^s\ \{ x \} \ &= x \\
+    (h_2 \compose f_2)\ x &= max\     [x]   \ &= x \\
+    (h_3 \compose f_3)\ x &= max\     [x]   \ &= x \\
+    (h_4 \compose f_4)\ x &= id\       x    \ &= x \\
+\end{alignat*}
+
 \end{document}
