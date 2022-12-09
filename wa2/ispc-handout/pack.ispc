@@ -1,4 +1,6 @@
-export uniform int pack_ispc(uniform int output[], uniform int input[], uniform int n) {
+export uniform int pack_ispc(uniform int output[]
+                            ,uniform int input[]
+                            ,uniform int n) {
   uniform int m = 0;
   uniform int cur = input[0]^1; // <- guaranteed distinct
   foreach (i = 0 ... n) {

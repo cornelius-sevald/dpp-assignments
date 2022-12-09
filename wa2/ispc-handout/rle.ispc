@@ -1,4 +1,6 @@
-export uniform int rle_ispc(uniform int output[], uniform int input[], uniform int n) {
+export uniform int rle_ispc(uniform int output[]
+                           ,uniform int input[]
+                           ,uniform int n) {
   uniform int cur = input[0];
   uniform int count = 1;
   uniform int m = 0;
