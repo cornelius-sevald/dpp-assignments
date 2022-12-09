@@ -3,7 +3,6 @@
 # sequential execution for some targets.  I am not certain whether
 # this is an ISPC bug.
 
-N_RUNS?=10
 ISPC_TARGET?=sse4
 ISPC=ispc -O3 --target=$(ISPC_TARGET) --pic
 CC=gcc
