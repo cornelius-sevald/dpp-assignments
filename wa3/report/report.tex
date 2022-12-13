@@ -9,4 +9,38 @@
 \date{2022-12-16}
 \maketitle
 
+\section*{Task 1}
+
+The code for \verb|flatIf| is not shown as it's a quite large function but can
+be found in the \verb|flat-if-then-else.fut| file. Run \verb|make test| to test
+it and \verb|make bench| to run the benchmarks. You can optionally choose a
+different backend (defaults to \verb|opencl|) when testing/benchmarking e.g.
+with \verb|make BACKEND=c bench|.
+
+As an additional test, I selected following (nested) input:
+\begin{Verbatim}
+shp = [0,  1,   2,     3,       4,         5          ]
+xss = [[], [1], [2,2], [3,3,3], [4,4,4,4], [5,5,5,5,5]]
+bs  = [F,  T,   F,     F,       T,         T          ]
+\end{Verbatim}
+As can be seen, \verb|f| is mapped over \verb|[1]|, \verb|[4,4,4,4]| and
+\verb|[5,5,5,5,5]| and \verb|g| is mapped over \verb|[]|, \verb|[2,2]| and
+\verb|[3,3,3]| which should produce:
+\begin{Verbatim}
+xss_res = [[], [2], [4,4], [6,6,6], [5,5,5,5], [6,6,6,6,6]]
+\end{Verbatim}
+
+For the large dataset, I am creating \num{10000000} (ten million) random inputs for
+\verb|xss| and \num{1000} random inputs for \verb|bs|. I'm then creating the
+shape array as a uniform array filled with \num{1000} \verb|10000|-values.
+(as $\num{1000} \cdot \num{10000} = \num{10000000}$).
+
+The sequential version does much better against the parallel version for small
+subarrays so \num{1000} subarrays of size \num{10000} was chosen as a middle
+ground. With these parameters, the parallel version gives a speedup of
+\textapprox 46.16x. ($\qty{17174}{\micro\second}$ vs.
+$\qty{792759}{\micro\second}$ for \verb|opencl| vs. \verb|c| resp.). The
+benchmarks were done with Futhark version 0.21.4 on the \verb|gpu04-diku-apl|
+machine.
+
 \end{document}
