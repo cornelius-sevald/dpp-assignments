@@ -1,11 +1,23 @@
 -- Flattening If-Then-Else nested inside a map
+
+-- Tests
 -- ==
+-- entry: main
 -- compiled input { [false,true,false,true]
 --                  [3i64,4i64,2i64,1i64]
 --                  [1,2,3,4,5,6,7,8,9,10]
 -- }
 -- output { [3i64,4i64,2i64,1i64] [2,4,6,5,6,7,8,16,18,11] }
---
+-- compiled input { [false,true,false,false,true,true]
+--                  [0i64,1i64,2i64,3i64,4i64,5i64]
+--                  [1,2,2,3,3,3,4,4,4,4,5,5,5,5,5]
+-- }
+-- output { [0i64,1i64,2i64,3i64,4i64,5i64] [2,4,4,6,6,6,5,5,5,5,6,6,6,6,6] }
+
+-- Benchmarks
+-- ==
+-- entry: bench_flatIf
+-- random input { [1000]bool [10000000]i32 }
 
 let exclusive_scan 't [n] (op : t -> t -> t) (ne: t) (arr : [n]t) : [n]t =
   scan op ne arr |> rotate (-1) with [0] = ne
@@ -123,5 +135,12 @@ let flatIf [n][m] (f: i32 -> i32) (g: i32->i32)
   in  (S1_res, D_res)
 
 -- echo "[false,true,false,true] [3,4,2,1] [1,2,3,4,5,6,7,8,9,10]" | ./flat-if-then-else
-let main [n][m] (bs: [m]bool) (S1_xss: [m]i64) (D_xss: [n]i32) =
-    flatIf (\x->x+1i32) (\x->2i32*x) bs (S1_xss, D_xss)
+entry main [n][m] (bs: [m]bool) (S1_xss: [m]i64) (D_xss: [n]i32) =
+  flatIf (\x->x+1i32) (\x->2i32*x) bs (S1_xss, D_xss)
+
+-- benchmark `flatIf`. Assumes `m` evenly divides `n`
+entry bench_flatIf [n][m] (bs: [m]bool) (D_xss: [n]i32) =
+  let _ = #[trace(bs)] bs
+  let _ = #[trace(D_xss)] D_xss
+  let S1_xss = #[trace(S1_xss)] replicate m (n/m)
+  in flatIf (\x->x+1i32) (\x->2i32*x) bs (S1_xss, D_xss)
