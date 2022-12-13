@@ -7,6 +7,9 @@
 -- output { [3i64,4i64,2i64,1i64] [2,4,6,5,6,7,8,16,18,11] }
 --
 
+let exclusive_scan 't [n] (op : t -> t -> t) (ne: t) (arr : [n]t) : [n]t =
+  scan op ne arr |> rotate (-1) with [0] = ne
+
 let sgmscan 't [n] (op: t->t->t) (ne: t) (flg : [n]i64) (arr : [n]t) : [n]t =
   let flgs_vals =
     scan ( \ (f1, x1) (f2,x2) ->
@@ -50,7 +53,7 @@ let partition2 [n] 't (conds: [n]bool) (dummy: t) (arr: [n]t) : (i64, [n]t) =
   let fltarr= scatter (replicate n dummy) inds arr
   in  (lst, fltarr)
 
-let mkII2 [m] (shp: [m]i64) : []i32 =
+let mkII2 [m] (shp: [m]i64) : []i64 =
     let F = mkFlagArray shp 0 (replicate m 1)
     in  sgmscan (+) 0 F (map (const 1) F) |> map (\x->x-1)
 
@@ -90,12 +93,34 @@ let mkII2 [m] (shp: [m]i64) : []i32 =
 --    and `filter even` but you will need work hard to flatten
 --    `map (filter odd)`. (It is not required!)
 --
-let flatIf [n][m] (f: i32 -> i32) (g: i32->i32) (bs: [m]bool) (S1_xss: [m]i64, D_xss: [n]i32) : ([]i64, []i32) =
-  let S_1_res = S1_xss
-  let D_res = D_xss
-  in  (S_1_res, D_res)
+let flatIf [n][m] (f: i32 -> i32) (g: i32->i32)
+                  (bs: [m]bool) (S1_xss: [m]i64, D_xss: [n]i32)
+                : ([]i64, []i32) =
 
-
+  let F_xss = mkFlagArray S1_xss 0 (1...(length S1_xss) :> [m]i64)
+  let ii1_xss = sgmscan (+) 0 F_xss F_xss |> map (\x->x-1)
+  let ii2_xss = mkII2 S1_xss
+  let (spl, iinds) = partition2 bs 0i64 (iota (length bs) :> [m]i64)
+  let (S1_xss_then, S1_xss_else) = split spl (map (\ii -> S1_xss[ii]) iinds)
+  let mask_xss = map (\sgmind -> bs[sgmind]) ii1_xss :> [n]bool
+  let (brk, Dp_xss) = partition2 mask_xss 0i32 D_xss
+  let (D_xss_then, D_xss_else) = split brk Dp_xss
+  -- preserve lengths in this case.
+  let (S1_res_then, D_res_then) = (S1_xss_then, map f D_xss_then)
+  let (S1_res_else, D_res_else) = (S1_xss_else, map g D_xss_else)
+  let S1P_res = S1_res_then ++ S1_res_else :> [m]i64
+  let S1_res = scatter (replicate (length bs) 0) iinds S1P_res
+  let B1_res = exclusive_scan (+) 0 S1_res
+  let FP_res = mkFlagArray S1P_res 0 (map (+1) iinds)
+  let II1P_res = sgmscan (+) 0 FP_res FP_res |> map (\x->x-1) :> [n]i64
+  let II2_res_then = mkII2 S1_xss_then
+  let II2_res_else =  mkII2 S1_xss_else
+  let II2P_res = II2_res_then ++ II2_res_else :> [n]i64
+  let flen_res = reduce (+) 0 S1_res
+  let sinds_res = map2 (\sgm iin -> B1_res[sgm] + iin) II1P_res II2P_res :> [flen_res]i64
+  let D_res_then_else = D_res_then ++ D_res_else :> [flen_res]i32
+  let D_res = scatter (replicate n 0) sinds_res D_res_then_else
+  in  (S1_res, D_res)
 
 -- echo "[false,true,false,true] [3,4,2,1] [1,2,3,4,5,6,7,8,9,10]" | ./flat-if-then-else
 let main [n][m] (bs: [m]bool) (S1_xss: [m]i64) (D_xss: [n]i32) =
