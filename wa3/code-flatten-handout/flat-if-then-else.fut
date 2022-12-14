@@ -19,9 +19,6 @@
 -- entry: bench_flatIf
 -- random input { [1000]bool [10000000]i32 }
 
-let exclusive_scan 't [n] (op : t -> t -> t) (ne: t) (arr : [n]t) : [n]t =
-  scan op ne arr |> rotate (-1) with [0] = ne
-
 let sgmscan 't [n] (op: t->t->t) (ne: t) (flg : [n]i64) (arr : [n]t) : [n]t =
   let flgs_vals =
     scan ( \ (f1, x1) (f2,x2) ->
@@ -122,7 +119,7 @@ let flatIf [n][m] (f: i32 -> i32) (g: i32->i32)
   let (S1_res_else, D_res_else) = (S1_xss_else, map g D_xss_else)
   let S1P_res = S1_res_then ++ S1_res_else :> [m]i64
   let S1_res = scatter (replicate (length bs) 0) iinds S1P_res
-  let B1_res = exclusive_scan (+) 0 S1_res
+  let B1_res = scanExc (+) 0 S1_res
   let FP_res = mkFlagArray S1P_res 0 (map (+1) iinds)
   let II1P_res = sgmscan (+) 0 FP_res FP_res |> map (\x->x-1) :> [n]i64
   let II2_res_then = mkII2 S1_xss_then
