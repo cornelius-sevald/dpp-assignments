@@ -30,9 +30,9 @@ As can be seen, \verb|f| is mapped over \verb|[1]|, \verb|[4,4,4,4]| and
 xss_res = [[], [2], [4,4], [6,6,6], [5,5,5,5], [6,6,6,6,6]]
 \end{Verbatim}
 
-For the large dataset, I am creating \num{10000000} (ten million) random inputs for
-\verb|xss| and \num{1000} random inputs for \verb|bs|. I'm then creating the
-shape array as a uniform array filled with \num{1000} \verb|10000|-values.
+For the large dataset, I am creating \num{10000000} (ten million) random inputs
+for \verb|xss| and \num{1000} random inputs for \verb|bs|. I'm then creating
+the shape array as a uniform array filled with \num{1000} \verb|10000|-values.
 (as $\num{1000} \cdot \num{10000} = \num{10000000}$).
 
 The sequential version does much better against the parallel version for small
@@ -42,5 +42,39 @@ ground. With these parameters, the parallel version gives a speedup of
 $\qty{792759}{\micro\second}$ for \verb|opencl| vs. \verb|c| resp.). The
 benchmarks were done with Futhark version 0.21.4 on the \verb|gpu04-diku-apl|
 machine.
+
+\section*{Task 2}
+
+\textbf{Intuition:} we want to increment the values of \verb|iss| so that they
+match the indices of \verb|xss| they are meant to reference. To do this, we'll
+probably need the shape of \verb|xss| to know how much we should increment. Each
+subarray in \verb|iss| should be incremented the same amount, which suggests we
+should use the Inner Indices of \verb|iss|.
+
+This leads to the following steps:
+\begin{enumerate}
+    \item Do an exclusive prefix sum over the shape array of \verb|xss|.
+    \item Create the Inner Indices ($\texttt{II}^1_{\texttt{iss}}$) array of the
+        shape of \verb|iss|/\verb|vss|.
+    \item Pairwise add the values of \verb|iss| and the array computed in step 1
+        referenced through $\texttt{II}^1_{\texttt{iss}}$ i.e. $\texttt{iss'}[i]
+        = \texttt{iss}[i] + \texttt{scn}_{\texttt{shp}} \left[
+            \texttt{II}^1_{\texttt{iss}}[i] \right]$ where
+        $\texttt{scn}_{\texttt{shp}}$ is the array from step 1.
+    \item Do a \verb|scatter| over \verb|xss|, \verb|iss'| and \verb|vss| where
+        \verb|iss'| is the array from step 3.
+\end{enumerate}
+
+% debating if i should keep this section
+\ignore{
+Instead of computing $\texttt{II}^1_{\texttt{iss}}$ it is possible to simply
+construct a flag array from the shape of \verb|iss| with the values of the flags
+being the array from step 1 and then doing a segmented scan with the flag array
+acting both as the actual flags and array to scan over and then directly doing a
+pairwise addition over the \verb|iss| and the scanned flag array, which saves a
+level of indirection through $\texttt{II}^1_{\texttt{iss}}$. I chose not to do
+this as $\texttt{II}^1_{\texttt{iss}}$ might already be computed from earlier
+flattening.
+}
 
 \end{document}
