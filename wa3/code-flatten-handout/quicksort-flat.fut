@@ -8,9 +8,17 @@
 --                `partition2` on each subarray (segment).
 -- 3. quicksort:  is the flat-parallel version of quicksort algorithm.
 --                quicksort implementation uses `partition2L`.
+
+-- Tests
 -- ==
--- compiled input { [29.0f32, 5.0f32, 7.0f32, 11.0f32, 2.0f32, 3.0f32, 13.0f32, 23.0f32, 17.0f32, 19.0f32] }
+-- entry: main
+-- compiled nobench input { [29.0f32, 5.0f32, 7.0f32, 11.0f32, 2.0f32, 3.0f32, 13.0f32, 23.0f32, 17.0f32, 19.0f32] }
 -- output { [2.0f32, 3.0f32, 5.0f32, 7.0f32, 11.0f32, 13.0f32, 17.0f32, 19.0f32, 23.0f32, 29.0f32] }
+
+-- Benchmarks
+-- ==
+-- entry: main
+-- random input { [10000000]f32 }
 
 ---------------------
 --- SgmSumInt     ---
@@ -172,10 +180,7 @@ let main0 [m][n] (shp: [m]i32) (arr: [n]i32) : ([m]i32, [m]i32, [n]i32) =
     let (ps, (shp',arr')) = partition2L (map (\x -> (x % 2) == 0i32) arr) 0i32 (shp, arr)
     in  (ps, shp', arr')
 
-entry main = main0
-
 -- futhark dataset -b --f32-bounds=-1000000.0:1000000.0 -g [10000000]f32 | ./quicksort-flat -t /dev/stderr -r 2 > /dev/null
---let main [n] (arr: [n]f32) =
---    let (_,res) = quicksortL ([i32.i64 n], arr)   
---    in  res
-
+let main [n] (arr: [n]f32) =
+    let (_,res) = quicksortL ([i32.i64 n], arr)   
+    in  res

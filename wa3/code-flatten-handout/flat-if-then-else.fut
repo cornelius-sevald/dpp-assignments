@@ -3,14 +3,14 @@
 -- Tests
 -- ==
 -- entry: main
--- compiled input { [false,true,false,true]
---                  [3i64,4i64,2i64,1i64]
---                  [1,2,3,4,5,6,7,8,9,10]
+-- compiled nobench input { [false,true,false,true]
+--                          [3i64,4i64,2i64,1i64]
+--                          [1,2,3,4,5,6,7,8,9,10]
 -- }
 -- output { [3i64,4i64,2i64,1i64] [2,4,6,5,6,7,8,16,18,11] }
--- compiled input { [false,true,false,false,true,true]
---                  [0i64,1i64,2i64,3i64,4i64,5i64]
---                  [1,2,2,3,3,3,4,4,4,4,5,5,5,5,5]
+-- compiled nobench input { [false,true,false,false,true,true]
+--                          [0i64,1i64,2i64,3i64,4i64,5i64]
+--                          [1,2,2,3,3,3,4,4,4,4,5,5,5,5,5]
 -- }
 -- output { [0i64,1i64,2i64,3i64,4i64,5i64] [2,4,4,6,6,6,5,5,5,5,6,6,6,6,6] }
 
