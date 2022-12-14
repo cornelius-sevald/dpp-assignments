@@ -26,6 +26,12 @@ let sgmSumInt [n] (flg : [n]i32) (arr : [n]i32) : [n]i32 =
   let (_, vals) = unzip flgs_vals
   in vals
 
+----------------------
+--- Exclusive scan ---
+----------------------
+let scanExc 't [n] (op: t->t->t) (ne: t) (arr : [n]t) : [n]t =
+    scan op ne <| map (\i -> if i>0 then arr[i-1] else ne) (iota n)
+
 ---------------------
 --- MkFlags Array ---
 ---------------------
@@ -97,11 +103,23 @@ let partition2L 't [n] [m]
                 (condsL: [n]bool) (dummy: t)
                 (shp: [m]i32, arr: [n]t) :
                 ([m]i32, ([m]i32, [n]t)) =
-  let begs   = scan (+) 0 shp
-  let flags  = mkFlagArray shp 0i32 (map (+1) (map i32.i64 (iota m)))
-  let outinds= sgmSumInt flags <| map (\f -> if f==0 then 0 else f-1) flags
+  let begs    = scan (+) 0 shp
+  let scn_shp = scanExc (+) 0 shp
+  let flags   = mkFlagArray shp 0i32 (map (+1) (map i32.i64 (iota m))) :> [n]i32
+  let outinds = sgmSumInt flags <| map (\f -> if f==0 then 0 else f-1) flags
 
-  in  (shp, (shp,arr))
+  let tflgsL  = map (\ c -> if c then 1 else 0) condsL
+  let fflgsL  = map (\b -> 1 - b) tflgsL
+
+  let indsTL  = sgmSumInt flags tflgsL
+  let tmpL    = sgmSumInt flags fflgsL
+  let lstL    = map (\beg -> if beg > 0 then indsTL[beg-1] else -1i32) begs
+  let indsFL  = map (\i -> tmpL[i] + lstL[outinds[i]]) <| iota n
+
+  let indsL   = map3 (\c indT indF -> if c then indT-1i32 else indF-1) condsL indsTL indsFL
+  let indsL'  = map (\i -> i64.i32 <| indsL[i] + scn_shp[outinds[i]]) <| iota n
+  let fltarrL = scatter (replicate n dummy) indsL' arr
+  in  (lstL, (shp,fltarrL))
 
 -----------------------
 --- Flat Quicksort
@@ -154,8 +172,10 @@ let main0 [m][n] (shp: [m]i32) (arr: [n]i32) : ([m]i32, [m]i32, [n]i32) =
     let (ps, (shp',arr')) = partition2L (map (\x -> (x % 2) == 0i32) arr) 0i32 (shp, arr)
     in  (ps, shp', arr')
 
+entry main = main0
+
 -- futhark dataset -b --f32-bounds=-1000000.0:1000000.0 -g [10000000]f32 | ./quicksort-flat -t /dev/stderr -r 2 > /dev/null
-let main [n] (arr: [n]f32) =
-    let (_,res) = quicksortL ([i32.i64 n], arr)   
-    in  res
+--let main [n] (arr: [n]f32) =
+--    let (_,res) = quicksortL ([i32.i64 n], arr)   
+--    in  res
 
