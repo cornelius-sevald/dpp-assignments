@@ -22,4 +22,15 @@ def gaussian_elimination [n] [m] (A: [m][n]f32): [m][n]f32 =
                              irow A[j])
 
 def matrix_inverse [n] (A: [n][n]f32): [n][n]f32 =
-  ???
+  let AI =
+    let I = scatter (replicate (n*n) 0)
+                    (map (\i -> i+n*i) (iota n))
+                    (replicate n 1)
+                  |> unflatten n n
+    in map2 (concat_to (2*n)) A I
+  let BAinv = gaussian_elimination AI
+  let Ainv = BAinv[0:n,n:2*n] :> [n][n]f32
+  in Ainv
+
+entry main [k] [n] (As: [k][n][n]f32) : [k][n][n]f32 =
+  map matrix_inverse As
