@@ -1,3 +1,6 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{pmboxdraw}
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{graphicx}
@@ -16,10 +19,11 @@
 
 \graphicspath{ {./figures/} }
 
-\setminted[furthark]{
+\setminted[futhark]{
 frame=lines,
 framesep=2mm,
 baselinestretch=1.2,
+autogobble,
 linenos
 }
 

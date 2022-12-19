@@ -1,0 +1,887 @@
+types {
+  
+}
+
+
+
+entry("main",
+      {As: [][][]f32},
+      {[][][]f32})
+  entry_main (k_8645 : i64, n_8646 : i64, As_8647 : [k_8645][n_8646][n_8646]f32)
+  : {[k_8645][n_8646][n_8646]f32} = {
+  let {iota_res_9440 : [n_8646]i64} =
+    iota64(n_8646, 0i64, 1i64)
+  let {segmap_group_size_9493 : i64} =
+    get_size(segmap_group_size_9484, group_size)
+  let {segmap_usable_groups_9494 : i64} = sdiv_up64(n_8646, segmap_group_size_9493)
+  let {defunc_1_map_res_9495 : [n_8646]i64} =
+    segmap(thread; #groups=segmap_usable_groups_9494; groupsize=segmap_group_size_9493)
+    (gtid_9496 < n_8646) (~phys_tid_9497) : {i64} {
+      let {y_9499 : i64} = mul64(n_8646, gtid_9496)
+      let {defunc_0_f_res_9500 : i64} = add64(gtid_9496, y_9499)
+      return {returns defunc_0_f_res_9500}
+    }
+  let {replicate_arg_9324 : i64} = mul64(n_8646, n_8646)
+  let {dyn_concat_to_arg_9327 : i64} = mul64(2i64, n_8646)
+  let {conc_tmp_9328 : i64} = add_nw64(n_8646, n_8646)
+  let {dim_match_9329 : bool} = eq_i64(dyn_concat_to_arg_9327, conc_tmp_9328)
+  let {empty_or_match_cert_9330 : unit} =
+    assert(dim_match_9329, {"Value of (core language) shape (", conc_tmp_9328 : i64, ") cannot match shape of type `[", dyn_concat_to_arg_9327 : i64, "]t`."}, "/prelude/array.fut:73:66-81")
+  let {min_res_9331 : i64} = smin64(n_8646, dyn_concat_to_arg_9327)
+  let {empty_slice_9332 : bool} = eq_i64(n_8646, 0i64)
+  let {m_9333 : i64} = sub64(n_8646, 1i64)
+  let {zero_leq_i_p_m_t_s_9334 : bool} = sle64(0i64, m_9333)
+  let {i_p_m_t_s_leq_w_9335 : bool} = slt64(m_9333, n_8646)
+  let {i_lte_j_9336 : bool} = sle64(0i64, n_8646)
+  let {y_9337 : bool} = logand(zero_leq_i_p_m_t_s_9334, i_p_m_t_s_leq_w_9335)
+  let {y_9338 : bool} = logand(i_lte_j_9336, y_9337)
+  let {ok_or_empty_9339 : bool} = logor(empty_slice_9332, y_9338)
+  let {j_m_i_9340 : i64} = sub64(dyn_concat_to_arg_9327, n_8646)
+  let {empty_slice_9341 : bool} = eq_i64(j_m_i_9340, 0i64)
+  let {m_9342 : i64} = sub64(j_m_i_9340, 1i64)
+  let {i_p_m_t_s_9343 : i64} = add64(n_8646, m_9342)
+  let {zero_leq_i_p_m_t_s_9344 : bool} = sle64(0i64, i_p_m_t_s_9343)
+  let {i_p_m_t_s_leq_w_9345 : bool} = slt64(i_p_m_t_s_9343, dyn_concat_to_arg_9327)
+  let {i_lte_j_9346 : bool} = sle64(n_8646, dyn_concat_to_arg_9327)
+  let {y_9347 : bool} = logand(i_lte_j_9336, i_p_m_t_s_leq_w_9345)
+  let {y_9348 : bool} = logand(zero_leq_i_p_m_t_s_9344, y_9347)
+  let {y_9349 : bool} = logand(i_lte_j_9346, y_9348)
+  let {forwards_ok_9350 : bool} = logand(i_lte_j_9336, y_9349)
+  let {ok_or_empty_9351 : bool} = logor(empty_slice_9341, forwards_ok_9350)
+  let {index_ok_9352 : bool} = logand(ok_or_empty_9339, ok_or_empty_9351)
+  let {index_certs_9353 : unit} =
+    assert(index_ok_9352, {"Index [", 0i64 : i64, ":", n_8646 : i64, ", ", n_8646 : i64, ":", dyn_concat_to_arg_9327 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:32:14-29")
+  let {dim_match_9354 : bool} = eq_i64(n_8646, j_m_i_9340)
+  let {empty_or_match_cert_9355 : unit} =
+    assert(dim_match_9354, {"Value of (core language) shape (", n_8646 : i64, ", ", j_m_i_9340 : i64, ") cannot match shape of type `[", n_8646 : i64, "][", n_8646 : i64, "]f32`."}, "matrix-inversion.fut:32:14-42")
+  let {suff_outer_par_9568 : bool} =
+    cmp_size(suff_outer_par_0, threshold(def, )) <= k_8645
+  let {one_intra_par_min_9560 : i64} = mul_nw64(n_8646, dyn_concat_to_arg_9327)
+  let {one_intra_par_avail_9561 : i64} = mul_nw64(n_8646, dyn_concat_to_arg_9327)
+  let {y_9562 : i64} = smin64(n_8646, dyn_concat_to_arg_9327)
+  let {intra_avail_par_9563 : i64} = smin64(one_intra_par_avail_9561, y_9562)
+  let {y_9564 : i64} = smax64(n_8646, dyn_concat_to_arg_9327)
+  let {computed_group_size_9503 : i64} = smax64(one_intra_par_min_9560, y_9564)
+  let {max_group_size_9730 : i64} =
+    get_size_max(group_size)
+  let {fits_9731 : bool} = sle64(computed_group_size_9503, max_group_size_9730)
+  let {suff_intra_par_9729 : bool} =
+    cmp_size(suff_intra_par_1, threshold(32, !suff_outer_par_0)) <= intra_avail_par_9563
+  let {intra_suff_and_fits_9732 : bool} = logand(suff_intra_par_9729, fits_9731)
+  let {nest_size_10647 : i64} = mul_nw64(k_8645, n_8646)
+  let {segmap_group_size_10648 : i64} =
+    get_size(segmap_group_size_10595, group_size)
+  let {suff_outer_par_10671 : bool} =
+    cmp_size(suff_outer_par_2, threshold(def, !suff_outer_par_0 !suff_intra_par_1)) <= k_8645
+  let {one_intra_par_min_10672 : i64} = mul_nw64(n_8646, dyn_concat_to_arg_9327)
+  let {one_intra_par_avail_10673 : i64} = mul_nw64(n_8646, dyn_concat_to_arg_9327)
+  let {y_10674 : i64} = smin64(n_8646, dyn_concat_to_arg_9327)
+  let {intra_avail_par_10675 : i64} = smin64(one_intra_par_avail_10673, y_10674)
+  let {y_10676 : i64} = smax64(n_8646, dyn_concat_to_arg_9327)
+  let {computed_group_size_10677 : i64} = smax64(one_intra_par_min_10672, y_10676)
+  let {max_group_size_10679 : i64} =
+    get_size_max(group_size)
+  let {fits_10680 : bool} = sle64(computed_group_size_10677, max_group_size_10679)
+  let {suff_intra_par_10682 : bool} =
+    cmp_size(suff_intra_par_3, threshold(32, !suff_outer_par_2 !suff_outer_par_0 !suff_intra_par_1)) <= intra_avail_par_10675
+  let {intra_suff_and_fits_10683 : bool} = logand(fits_10680, suff_intra_par_10682)
+  let {nest_size_10832 : i64} = mul_nw64(k_8645, n_8646)
+  let {segred_group_size_10833 : i64} =
+    get_size(segred_group_size_10406, group_size)
+  let {num_groups_10834 : i64} =
+    calc_num_groups(nest_size_10832, segred_num_groups_10408, segred_group_size_10833)
+  let {segmap_group_size_10861 : i64} =
+    get_size(segmap_group_size_10385, group_size)
+  let {y_10879 : i64} = mul_nw64(2i64, n_8646)
+  let {nest_size_10880 : i64} = mul_nw64(k_8645, y_10879)
+  let {segmap_group_size_10881 : i64} =
+    get_size(segmap_group_size_10372, group_size)
+  let {y_10895 : i64} = mul_nw64(2i64, n_8646)
+  let {nest_size_10896 : i64} = mul_nw64(k_8645, y_10895)
+  let {segmap_group_size_10897 : i64} =
+    get_size(segmap_group_size_10342, group_size)
+  let {nest_size_10914 : i64} = mul_nw64(k_8645, n_8646)
+  let {segmap_group_size_10915 : i64} =
+    get_size(segmap_group_size_10245, group_size)
+  let {y_10962 : i64} = mul_nw64(2i64, n_8646)
+  let {y_10963 : i64} = mul_nw64(n_8646, y_10962)
+  let {nest_size_10964 : i64} = mul_nw64(k_8645, y_10963)
+  let {segmap_group_size_10965 : i64} =
+    get_size(segmap_group_size_10176, group_size)
+  let {segmap_group_size_10686 : i64} =
+    get_size(segmap_group_size_9930, group_size)
+  let {num_groups_10687 : i64} =
+    calc_num_groups(k_8645, segmap_num_groups_9932, segmap_group_size_10686)
+  let {y_10982 : i64} = mul_nw64(n_8646, n_8646)
+  let {nest_size_10983 : i64} = mul_nw64(k_8645, y_10982)
+  let {segmap_group_size_10984 : i64} =
+    get_size(segmap_group_size_9842, group_size)
+  let {segmap_group_size_9651 : i64} =
+    get_size(segmap_group_size_9572, group_size)
+  let {num_groups_9652 : i64} =
+    calc_num_groups(k_8645, segmap_num_groups_9574, segmap_group_size_9651)
+  let {segmap_usable_groups_10862 : i64} = sdiv_up_safe64(k_8645, segmap_group_size_10861)
+  let {segmap_usable_groups_10882 : i64} = sdiv_up_safe64(nest_size_10880, segmap_group_size_10881)
+  let {segmap_usable_groups_10898 : i64} = sdiv_up_safe64(nest_size_10896, segmap_group_size_10897)
+  let {segmap_usable_groups_10916 : i64} = sdiv_up_safe64(nest_size_10914, segmap_group_size_10915)
+  let {segmap_usable_groups_10966 : i64} = sdiv_up_safe64(nest_size_10964, segmap_group_size_10965)
+  let {defunc_3_map_res_9480 : [k_8645][n_8646][n_8646]f32} =
+    if <equiv> suff_outer_par_9568
+    then {
+      let {defunc_3_map_res_9654 : [k_8645][n_8646][n_8646]f32} =
+        segmap(thread; #groups=num_groups_9652; groupsize=segmap_group_size_9651; virtualise)
+        (gtid_9655 < k_8645) (~phys_tid_9656) : {[n_8646][n_8646]f32} {
+          let {x_9657 : [n_8646][n_8646]f32} =
+            As_8647[gtid_9655, 0i64 :+ n_8646 * 1i64, 0i64 :+ n_8646 * 1i64]
+          let {defunc_1_map_res_9658 : [replicate_arg_9324]f32} =
+            replicate([replicate_arg_9324], 0.0f32)
+          let {scatter_res_9659 : [replicate_arg_9324]f32} =
+            scatter(n_8646,
+                    {defunc_1_map_res_9495},
+                    \ {write_index_9660 : i64}
+                      : {i64,
+                         f32} ->
+                      {write_index_9660, 1.0f32},
+                    ([replicate_arg_9324], 1, defunc_1_map_res_9658))
+          let {defunc_0_f_res_9661 : [n_8646][n_8646]f32} =
+            reshape([n_8646][n_8646], scatter_res_9659)
+          let {defunc_4_map_res_9662 : [n_8646][dyn_concat_to_arg_9327]f32} =
+            #{empty_or_match_cert_9330}
+            concat@1(dyn_concat_to_arg_9327, x_9657, defunc_0_f_res_9661)
+          let {gaussian_elimination_res_9663 : [n_8646][dyn_concat_to_arg_9327]f32} =
+            loop {A_9665 : [n_8646][dyn_concat_to_arg_9327]f32} = {defunc_4_map_res_9662}
+            for i_9664:i64 < min_res_9331 do {
+              let {y_9666 : bool} = slt64(i_9664, dyn_concat_to_arg_9327)
+              let {index_ok_9667 : bool} = logand(ok_or_empty_9339, y_9666)
+              let {index_certs_9668 : unit} =
+                assert(index_ok_9667, {"Index [", 0i64 : i64, ":, ", i_9664 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:16:13-18")
+              let {binop_p_9669 : [n_8646]f32} =
+                #{index_certs_9668}
+                A_9665[0i64 :+ n_8646 * 1i64, i_9664]
+              let {defunc_2_reduce_comm_res_9670 : f32,
+                   defunc_2_reduce_comm_res_9671 : i64} =
+                redomap(n_8646,
+                        {iota_res_9440, binop_p_9669},
+                        {commutative \ {x_9672 : f32, x_9673 : i64, x_9674 : f32, x_9675 : i64}
+                          : {f32,
+                             i64} ->
+                          let {cond_9676 : bool} = lt32(x_9672, x_9674)
+                          let {defunc_1_op_res_9677 : f32,
+                               defunc_1_op_res_9678 : i64} =
+                            if  cond_9676
+                            then {x_9674, x_9675} else {
+                              let {cond_9679 : bool} = lt32(x_9674, x_9672)
+                              let {defunc_1_op_res_f_res_9680 : f32,
+                                   defunc_1_op_res_f_res_9681 : i64} =
+                                if  cond_9679
+                                then {x_9672, x_9673} else {
+                                  let {cond_9682 : bool} = slt64(x_9675, x_9673)
+                                  let {defunc_1_op_res_f_res_f_res_9683 : f32} =
+                                    if  cond_9682
+                                    then {x_9674} else {x_9672}
+                                    : {f32}
+                                  let {defunc_1_op_res_f_res_f_res_9684 : i64} =
+                                    if  cond_9682
+                                    then {x_9675} else {x_9673}
+                                    : {i64}
+                                  in {defunc_1_op_res_f_res_f_res_9683, defunc_1_op_res_f_res_f_res_9684}
+                                }
+                                : {f32, i64}
+                              in {defunc_1_op_res_f_res_9680, defunc_1_op_res_f_res_9681}
+                            }
+                            : {f32, i64}
+                          in {defunc_1_op_res_9677, defunc_1_op_res_9678},
+                        {0.0f32, 0i64}},
+                        \ {x_9685 : i64, x_9686 : f32}
+                          : {f32,
+                             i64} ->
+                          let {cond_9687 : bool} = sle64(i_9664, x_9685)
+                          let {defunc_1_f_res_9688 : f32} =
+                            if  cond_9687
+                            then {
+                              let {abs_res_9689 : f32} = fabs32 x_9686
+                              in {abs_res_9689}
+                            } else {-f32.inf}
+                            : {f32}
+                          in {defunc_1_f_res_9688, x_9685})
+              let {y_9690 : bool} = slt64(i_9664, n_8646)
+              let {index_ok_9691 : bool} = logand(y_9666, y_9690)
+              let {index_certs_9692 : unit} =
+                assert(index_ok_9691, {"Index [", i_9664 : i64, ", ", i_9664 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:17:16-21")
+              let {y_9693 : f32} =
+                #{index_certs_9692}
+                A_9665[i_9664, i_9664]
+              let {x_9694 : f32} = fsub32(1.0f32, y_9693)
+              let {x_9695 : bool} = sle64(0i64, defunc_2_reduce_comm_res_9671)
+              let {y_9696 : bool} = slt64(defunc_2_reduce_comm_res_9671, n_8646)
+              let {bounds_check_9697 : bool} = logand(x_9695, y_9696)
+              let {index_ok_9698 : bool} = logand(y_9666, bounds_check_9697)
+              let {index_certs_9699 : unit} =
+                assert(index_ok_9698, {"Index [", defunc_2_reduce_comm_res_9671 : i64, ", ", i_9664 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:17:26-31")
+              let {y_9700 : f32} =
+                #{index_certs_9699}
+                A_9665[defunc_2_reduce_comm_res_9671, i_9664]
+              let {f_9701 : f32} = fdiv32(x_9694, y_9700)
+              let {index_certs_9702 : unit} =
+                assert(y_9690, {"Index [", i_9664 : i64, "] out of bounds for array of shape [", n_8646 : i64, "]."}, "matrix-inversion.fut:18:38-41")
+              let {defunc_2_map2_arg_9703 : [dyn_concat_to_arg_9327]f32} =
+                #{index_certs_9702}
+                A_9665[i_9664, 0i64 :+ dyn_concat_to_arg_9327 * 1i64]
+              let {index_certs_9704 : unit} =
+                assert(bounds_check_9697, {"Index [", defunc_2_reduce_comm_res_9671 : i64, "] out of bounds for array of shape [", n_8646 : i64, "]."}, "matrix-inversion.fut:18:33-36")
+              let {defunc_1_map2_arg_9705 : [dyn_concat_to_arg_9327]f32} =
+                #{index_certs_9704}
+                A_9665[defunc_2_reduce_comm_res_9671, 0i64 :+ dyn_concat_to_arg_9327 * 1i64]
+              let {defunc_1_map_res_9706 : [dyn_concat_to_arg_9327]f32} =
+                map(dyn_concat_to_arg_9327,
+                    {defunc_1_map2_arg_9705, defunc_2_map2_arg_9703},
+                    \ {x_9707 : f32, x_9708 : f32}
+                      : {f32} ->
+                      let {defunc_1_f_res_9709 : f32} =
+                        apply fma32(f_9701, x_9707, x_9708)
+                        : {f32}
+                      in {defunc_1_f_res_9709})
+              let {defunc_2_map_res_9710 : [n_8646][dyn_concat_to_arg_9327]f32} =
+                map(n_8646,
+                    {iota_res_9440},
+                    \ {x_9711 : i64}
+                      : {[dyn_concat_to_arg_9327]f32} ->
+                      let {x_9712 : bool} = sle64(0i64, x_9711)
+                      let {y_9713 : bool} = slt64(x_9711, n_8646)
+                      let {bounds_check_9714 : bool} = logand(x_9712, y_9713)
+                      let {index_ok_9715 : bool} = logand(y_9666, bounds_check_9714)
+                      let {index_certs_9716 : unit} =
+                        assert(index_ok_9715, {"Index [", x_9711 : i64, ", ", i_9664 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:20:30-35")
+                      let {x_9717 : f32} =
+                        #{index_certs_9716}
+                        A_9665[x_9711, i_9664]
+                      let {f_9718 : f32} = fmul32(-1.0f32, x_9717)
+                      let {index_certs_9719 : unit} =
+                        assert(bounds_check_9714, {"Index [", x_9711 : i64, "] out of bounds for array of shape [", n_8646 : i64, "]."}, "matrix-inversion.fut:22:35-38")
+                      let {defunc_2_map2_arg_9720 : [dyn_concat_to_arg_9327]f32} =
+                        #{index_certs_9719}
+                        A_9665[x_9711, 0i64 :+ dyn_concat_to_arg_9327 * 1i64]
+                      let {cond_9721 : bool} = eq_i64(x_9711, i_9664)
+                      let {defunc_1_map_res_9722 : [dyn_concat_to_arg_9327]f32} =
+                        map(dyn_concat_to_arg_9327,
+                            {defunc_1_map_res_9706, defunc_2_map2_arg_9720},
+                            \ {x_9723 : f32, x_9724 : f32}
+                              : {f32} ->
+                              let {defunc_1_f_res_9725 : f32} =
+                                if  cond_9721
+                                then {x_9723} else {
+                                  let {fma_res_9726 : f32} =
+                                    apply fma32(f_9718, x_9723, x_9724)
+                                    : {f32}
+                                  in {fma_res_9726}
+                                }
+                                : {f32}
+                              in {defunc_1_f_res_9725})
+                      in {defunc_1_map_res_9722})
+              in {defunc_2_map_res_9710}
+            }
+          let {Ainv_9727 : [n_8646][n_8646]f32} =
+            #{index_certs_9353, empty_or_match_cert_9355}
+            gaussian_elimination_res_9663[0i64 :+ n_8646 * 1i64, n_8646 :+ n_8646 * 1i64]
+          return {returns Ainv_9727}
+        }
+      in {defunc_3_map_res_9654}
+    } else {
+      let {defunc_3_map_res_10994 : [k_8645][n_8646][n_8646]f32} =
+        if <equiv> intra_suff_and_fits_9732
+        then {
+          let {defunc_3_map_res_9733 : [k_8645][n_8646][n_8646]f32} =
+            segmap(group; #groups=k_8645; groupsize=computed_group_size_9503)
+            (gtid_9734 < k_8645) (~phys_tid_9735) : {[n_8646][n_8646]f32} {
+              let {x_9736 : [n_8646][n_8646]f32} =
+                As_8647[gtid_9734, 0i64 :+ n_8646 * 1i64, 0i64 :+ n_8646 * 1i64]
+              let {defunc_1_map_res_9738 : [replicate_arg_9324]f32} =
+                replicate([replicate_arg_9324], 0.0f32)
+              let {scatter_res_9739 : [replicate_arg_9324]f32} =
+                segmap(thread; #groups=k_8645; groupsize=computed_group_size_9503)
+                (write_i_9740 < n_8646) (~phys_tid_9741) : {f32} {
+                  let {binop_y_11029 : i64} = mul64(n_8646, write_i_9740)
+                  let {index_primexp_11030 : i64} = add64(write_i_9740, binop_y_11029)
+                  return {defunc_1_map_res_9738 : [replicate_arg_9324]
+                  with ([index_primexp_11030] = 1.0f32)}
+                }
+              let {defunc_0_f_res_9743 : [n_8646][n_8646]f32} =
+                reshape([n_8646][n_8646], scatter_res_9739)
+              let {defunc_4_map_res_9744 : [n_8646][dyn_concat_to_arg_9327]f32} =
+                #{empty_or_match_cert_9330}
+                concat@1(dyn_concat_to_arg_9327, x_9736, defunc_0_f_res_9743)
+              let {gaussian_elimination_res_9745 : [n_8646][dyn_concat_to_arg_9327]f32} =
+                loop {A_9747 : [n_8646][dyn_concat_to_arg_9327]f32} = {defunc_4_map_res_9744}
+                for i_9746:i64 < min_res_9331 do {
+                  let {y_9748 : bool} = slt64(i_9746, dyn_concat_to_arg_9327)
+                  let {index_ok_9749 : bool} = logand(ok_or_empty_9339, y_9748)
+                  let {index_certs_9750 : unit} =
+                    assert(index_ok_9749, {"Index [", 0i64 : i64, ":, ", i_9746 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:16:13-18")
+                  let {defunc_2_reduce_comm_res_9752 : f32,
+                       defunc_2_reduce_comm_res_9753 : i64} =
+                    segred(thread; #groups=k_8645; groupsize=computed_group_size_9503)
+                    (gtid_9754 < n_8646) (~phys_tid_9755)
+                    ({0.0f32, 0i64},
+                    ,
+                    commutative \ {x_9756 : f32, x_9757 : i64, x_9758 : f32, x_9759 : i64}
+                      : {f32,
+                         i64} ->
+                      let {cond_9760 : bool} = lt32(x_9756, x_9758)
+                      let {defunc_1_op_res_9761 : f32,
+                           defunc_1_op_res_9762 : i64} =
+                        if  cond_9760
+                        then {x_9758, x_9759} else {
+                          let {cond_9763 : bool} = lt32(x_9758, x_9756)
+                          let {defunc_1_op_res_f_res_9764 : f32,
+                               defunc_1_op_res_f_res_9765 : i64} =
+                            if  cond_9763
+                            then {x_9756, x_9757} else {
+                              let {cond_9766 : bool} = slt64(x_9759, x_9757)
+                              let {defunc_1_op_res_f_res_f_res_9767 : f32} =
+                                if  cond_9766
+                                then {x_9758} else {x_9756}
+                                : {f32}
+                              let {defunc_1_op_res_f_res_f_res_9768 : i64} =
+                                if  cond_9766
+                                then {x_9759} else {x_9757}
+                                : {i64}
+                              in {defunc_1_op_res_f_res_f_res_9767, defunc_1_op_res_f_res_f_res_9768}
+                            }
+                            : {f32, i64}
+                          in {defunc_1_op_res_f_res_9764, defunc_1_op_res_f_res_9765}
+                        }
+                        : {f32, i64}
+                      in {defunc_1_op_res_9761, defunc_1_op_res_9762})
+                    : {f32, i64} {
+                      let {x_9770 : f32} =
+                        #{index_certs_9750}
+                        A_9747[gtid_9754, i_9746]
+                      let {cond_9771 : bool} = sle64(i_9746, gtid_9754)
+                      let {defunc_1_f_res_9772 : f32} =
+                        if  cond_9771
+                        then {
+                          let {abs_res_9773 : f32} = fabs32 x_9770
+                          in {abs_res_9773}
+                        } else {-f32.inf}
+                        : {f32}
+                      return {returns defunc_1_f_res_9772, returns gtid_9754}
+                    }
+                  let {y_9774 : bool} = slt64(i_9746, n_8646)
+                  let {index_ok_9775 : bool} = logand(y_9748, y_9774)
+                  let {index_certs_9776 : unit} =
+                    assert(index_ok_9775, {"Index [", i_9746 : i64, ", ", i_9746 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:17:16-21")
+                  let {y_9777 : f32} =
+                    #{index_certs_9776}
+                    A_9747[i_9746, i_9746]
+                  let {x_9778 : f32} = fsub32(1.0f32, y_9777)
+                  let {x_9779 : bool} = sle64(0i64, defunc_2_reduce_comm_res_9753)
+                  let {y_9780 : bool} = slt64(defunc_2_reduce_comm_res_9753, n_8646)
+                  let {bounds_check_9781 : bool} = logand(x_9779, y_9780)
+                  let {index_ok_9782 : bool} = logand(y_9748, bounds_check_9781)
+                  let {index_certs_9783 : unit} =
+                    assert(index_ok_9782, {"Index [", defunc_2_reduce_comm_res_9753 : i64, ", ", i_9746 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:17:26-31")
+                  let {y_9784 : f32} =
+                    #{index_certs_9783}
+                    A_9747[defunc_2_reduce_comm_res_9753, i_9746]
+                  let {f_9785 : f32} = fdiv32(x_9778, y_9784)
+                  let {index_certs_9786 : unit} =
+                    assert(y_9774, {"Index [", i_9746 : i64, "] out of bounds for array of shape [", n_8646 : i64, "]."}, "matrix-inversion.fut:18:38-41")
+                  let {index_certs_9788 : unit} =
+                    assert(bounds_check_9781, {"Index [", defunc_2_reduce_comm_res_9753 : i64, "] out of bounds for array of shape [", n_8646 : i64, "]."}, "matrix-inversion.fut:18:33-36")
+                  let {defunc_1_map_res_9790 : [dyn_concat_to_arg_9327]f32} =
+                    segmap(thread; #groups=k_8645; groupsize=computed_group_size_9503)
+                    (gtid_9791 < dyn_concat_to_arg_9327) (~phys_tid_9792) : {f32} {
+                      let {x_9793 : f32} =
+                        #{index_certs_9788}
+                        A_9747[defunc_2_reduce_comm_res_9753, gtid_9791]
+                      let {x_9794 : f32} =
+                        #{index_certs_9786}
+                        A_9747[i_9746, gtid_9791]
+                      let {defunc_1_f_res_9795 : f32} =
+                        apply fma32(f_9785, x_9793, x_9794)
+                        : {f32}
+                      return {returns defunc_1_f_res_9795}
+                    }
+                  let {f_r_9797 : [n_8646]f32} =
+                    segmap(thread; #groups=k_8645; groupsize=computed_group_size_9503)
+                    (gtid_9798 < n_8646) (~phys_tid_9799) : {f32} {
+                      let {index_certs_9805 : unit} =
+                        assert(y_9748, {"Index [", gtid_9798 : i64, ", ", i_9746 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:20:30-35")
+                      let {x_9806 : f32} =
+                        #{index_certs_9805}
+                        A_9747[gtid_9798, i_9746]
+                      let {f_9807 : f32} = fmul32(-1.0f32, x_9806)
+                      return {returns f_9807}
+                    }
+                  let {defunc_2_map_res_9821 : [n_8646][dyn_concat_to_arg_9327]f32} =
+                    segmap(thread; #groups=k_8645; groupsize=computed_group_size_9503)
+                    (gtid_9822 < n_8646, gtid_9823 < dyn_concat_to_arg_9327) (~phys_tid_9824) : {f32} {
+                      let {f_9825 : f32} =
+                        f_r_9797[gtid_9822]
+                      let {index_primexp_11024 : bool} = eq_i64(gtid_9822, i_9746)
+                      let {x_9827 : f32} =
+                        defunc_1_map_res_9790[gtid_9823]
+                      let {x_9828 : f32} =
+                        A_9747[gtid_9822, gtid_9823]
+                      let {defunc_1_f_res_9829 : f32} =
+                        if  index_primexp_11024
+                        then {x_9827} else {
+                          let {fma_res_9830 : f32} =
+                            apply fma32(f_9825, x_9827, x_9828)
+                            : {f32}
+                          in {fma_res_9830}
+                        }
+                        : {f32}
+                      return {returns defunc_1_f_res_9829}
+                    }
+                  in {defunc_2_map_res_9821}
+                }
+              let {Ainv_9831 : [n_8646][n_8646]f32} =
+                #{index_certs_9353, empty_or_match_cert_9355}
+                gaussian_elimination_res_9745[0i64 :+ n_8646 * 1i64, n_8646 :+ n_8646 * 1i64]
+              return {returns Ainv_9831}
+            }
+          in {defunc_3_map_res_9733}
+        } else {
+          let {defunc_1_map_res_r_10640 : [k_8645][replicate_arg_9324]f32} =
+            replicate([k_8645][replicate_arg_9324], 0.0f32)
+          let {segmap_usable_groups_10649 : i64} = sdiv_up64(nest_size_10647, segmap_group_size_10648)
+          let {scatter_res_r_10650 : [k_8645][replicate_arg_9324]f32} =
+            segmap(thread; #groups=segmap_usable_groups_10649; groupsize=segmap_group_size_10648)
+            (gtid_10651 < k_8645, gtid_10652 < n_8646) (~phys_tid_10653) : {f32} {
+              let {binop_y_11043 : i64} = mul64(n_8646, gtid_10652)
+              let {index_primexp_11044 : i64} = add64(gtid_10652, binop_y_11043)
+              return {defunc_1_map_res_r_10640 : [k_8645][replicate_arg_9324]
+              with ([gtid_10651, index_primexp_11044] = 1.0f32)}
+            }
+          let {defunc_0_f_res_r_10655 : [k_8645][n_8646][n_8646]f32} =
+            reshape([k_8645][n_8646][n_8646], scatter_res_r_10650)
+          let {defunc_4_map_res_r_10656 : [k_8645][n_8646][dyn_concat_to_arg_9327]f32} =
+            #{empty_or_match_cert_9330}
+            concat@2(dyn_concat_to_arg_9327, As_8647, defunc_0_f_res_r_10655)
+          let {gaussian_elimination_res_r_10658 : [k_8645][n_8646][dyn_concat_to_arg_9327]f32} =
+            loop {A_expanded_10660 : *[k_8645][n_8646][dyn_concat_to_arg_9327]f32} = {defunc_4_map_res_r_10656}
+            for i_10659:i64 < min_res_9331 do {
+              let {y_10661 : bool} = slt64(i_10659, dyn_concat_to_arg_9327)
+              let {index_ok_10662 : bool} = logand(ok_or_empty_9339, y_10661)
+              let {index_certs_10663 : unit} =
+                assert(index_ok_10662, {"Index [", 0i64 : i64, ":, ", i_10659 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:16:13-18")
+              let {y_10664 : bool} = slt64(i_10659, n_8646)
+              let {index_ok_10665 : bool} = logand(y_10661, y_10664)
+              let {index_certs_10666 : unit} =
+                assert(index_ok_10665, {"Index [", i_10659 : i64, ", ", i_10659 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:17:16-21")
+              let {index_certs_10667 : unit} =
+                assert(y_10664, {"Index [", i_10659 : i64, "] out of bounds for array of shape [", n_8646 : i64, "]."}, "matrix-inversion.fut:18:38-41")
+              let {gaussian_elimination_res_10684 : [k_8645][n_8646][dyn_concat_to_arg_9327]f32} =
+                if <equiv> suff_outer_par_10671
+                then {
+                  let {gaussian_elimination_res_10689 : [k_8645][n_8646][dyn_concat_to_arg_9327]f32} =
+                    #{index_certs_10663, index_certs_10667}
+                    segmap(thread; #groups=num_groups_10687; groupsize=segmap_group_size_10686; virtualise)
+                    (gtid_10690 < k_8645) (~phys_tid_10691) : {[n_8646][dyn_concat_to_arg_9327]f32} {
+                      let {A_expanded_transformed_row_10693 : [n_8646]f32} =
+                        #{index_certs_10663}
+                        A_expanded_10660[gtid_10690, 0i64 :+ n_8646 * 1i64, i_10659]
+                      let {A_expanded_transformed_row_10694 : [dyn_concat_to_arg_9327]f32} =
+                        #{index_certs_10667}
+                        A_expanded_10660[gtid_10690, i_10659, 0i64 :+ dyn_concat_to_arg_9327 * 1i64]
+                      let {defunc_2_reduce_comm_res_10695 : f32,
+                           defunc_2_reduce_comm_res_10696 : i64} =
+                        redomap(n_8646,
+                                {iota_res_9440, A_expanded_transformed_row_10693},
+                                {commutative \ {x_10697 : f32, x_10698 : i64, x_10699 : f32, x_10700 : i64}
+                                  : {f32,
+                                     i64} ->
+                                  let {cond_10701 : bool} = lt32(x_10697, x_10699)
+                                  let {defunc_1_op_res_10702 : f32,
+                                       defunc_1_op_res_10703 : i64} =
+                                    if  cond_10701
+                                    then {x_10699, x_10700} else {
+                                      let {cond_10704 : bool} = lt32(x_10699, x_10697)
+                                      let {defunc_1_op_res_f_res_10705 : f32,
+                                           defunc_1_op_res_f_res_10706 : i64} =
+                                        if  cond_10704
+                                        then {x_10697, x_10698} else {
+                                          let {cond_10707 : bool} = slt64(x_10700, x_10698)
+                                          let {defunc_1_op_res_f_res_f_res_10708 : f32} =
+                                            if  cond_10707
+                                            then {x_10699} else {x_10697}
+                                            : {f32}
+                                          let {defunc_1_op_res_f_res_f_res_10709 : i64} =
+                                            if  cond_10707
+                                            then {x_10700} else {x_10698}
+                                            : {i64}
+                                          in {defunc_1_op_res_f_res_f_res_10708, defunc_1_op_res_f_res_f_res_10709}
+                                        }
+                                        : {f32, i64}
+                                      in {defunc_1_op_res_f_res_10705, defunc_1_op_res_f_res_10706}
+                                    }
+                                    : {f32, i64}
+                                  in {defunc_1_op_res_10702, defunc_1_op_res_10703},
+                                {0.0f32, 0i64}},
+                                \ {x_10710 : i64, x_10711 : f32}
+                                  : {f32,
+                                     i64} ->
+                                  let {cond_10712 : bool} = sle64(i_10659, x_10710)
+                                  let {defunc_1_f_res_10713 : f32} =
+                                    if  cond_10712
+                                    then {
+                                      let {abs_res_10714 : f32} = fabs32 x_10711
+                                      in {abs_res_10714}
+                                    } else {-f32.inf}
+                                    : {f32}
+                                  in {defunc_1_f_res_10713, x_10710})
+                      let {y_10715 : f32} =
+                        #{index_certs_10666}
+                        A_expanded_10660[gtid_10690, i_10659, i_10659]
+                      let {x_10716 : f32} = fsub32(1.0f32, y_10715)
+                      let {x_10717 : bool} = sle64(0i64, defunc_2_reduce_comm_res_10696)
+                      let {y_10718 : bool} = slt64(defunc_2_reduce_comm_res_10696, n_8646)
+                      let {bounds_check_10719 : bool} = logand(x_10717, y_10718)
+                      let {index_ok_10720 : bool} = logand(y_10661, bounds_check_10719)
+                      let {index_certs_10721 : unit} =
+                        assert(index_ok_10720, {"Index [", defunc_2_reduce_comm_res_10696 : i64, ", ", i_10659 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:17:26-31")
+                      let {y_10722 : f32} =
+                        #{index_certs_10721}
+                        A_expanded_10660[gtid_10690, defunc_2_reduce_comm_res_10696, i_10659]
+                      let {f_10723 : f32} = fdiv32(x_10716, y_10722)
+                      let {index_certs_10724 : unit} =
+                        assert(bounds_check_10719, {"Index [", defunc_2_reduce_comm_res_10696 : i64, "] out of bounds for array of shape [", n_8646 : i64, "]."}, "matrix-inversion.fut:18:33-36")
+                      let {defunc_1_map2_arg_10725 : [dyn_concat_to_arg_9327]f32} =
+                        #{index_certs_10724}
+                        A_expanded_10660[gtid_10690, defunc_2_reduce_comm_res_10696, 0i64 :+ dyn_concat_to_arg_9327 * 1i64]
+                      let {defunc_1_map_res_10726 : [dyn_concat_to_arg_9327]f32} =
+                        map(dyn_concat_to_arg_9327,
+                            {defunc_1_map2_arg_10725, A_expanded_transformed_row_10694},
+                            \ {x_10727 : f32, x_10728 : f32}
+                              : {f32} ->
+                              let {defunc_1_f_res_10729 : f32} =
+                                apply fma32(f_10723, x_10727, x_10728)
+                                : {f32}
+                              in {defunc_1_f_res_10729})
+                      let {defunc_2_map_res_10730 : [n_8646][dyn_concat_to_arg_9327]f32} =
+                        map(n_8646,
+                            {iota_res_9440},
+                            \ {x_10731 : i64}
+                              : {[dyn_concat_to_arg_9327]f32} ->
+                              let {x_10732 : bool} = sle64(0i64, x_10731)
+                              let {y_10733 : bool} = slt64(x_10731, n_8646)
+                              let {bounds_check_10734 : bool} = logand(x_10732, y_10733)
+                              let {index_ok_10735 : bool} = logand(y_10661, bounds_check_10734)
+                              let {index_certs_10736 : unit} =
+                                assert(index_ok_10735, {"Index [", x_10731 : i64, ", ", i_10659 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:20:30-35")
+                              let {x_10737 : f32} =
+                                #{index_certs_10736}
+                                A_expanded_10660[gtid_10690, x_10731, i_10659]
+                              let {f_10738 : f32} = fmul32(-1.0f32, x_10737)
+                              let {index_certs_10739 : unit} =
+                                assert(bounds_check_10734, {"Index [", x_10731 : i64, "] out of bounds for array of shape [", n_8646 : i64, "]."}, "matrix-inversion.fut:22:35-38")
+                              let {defunc_2_map2_arg_10740 : [dyn_concat_to_arg_9327]f32} =
+                                #{index_certs_10739}
+                                A_expanded_10660[gtid_10690, x_10731, 0i64 :+ dyn_concat_to_arg_9327 * 1i64]
+                              let {cond_10741 : bool} = eq_i64(x_10731, i_10659)
+                              let {defunc_1_map_res_10742 : [dyn_concat_to_arg_9327]f32} =
+                                map(dyn_concat_to_arg_9327,
+                                    {defunc_1_map_res_10726, defunc_2_map2_arg_10740},
+                                    \ {x_10743 : f32, x_10744 : f32}
+                                      : {f32} ->
+                                      let {defunc_1_f_res_10745 : f32} =
+                                        if  cond_10741
+                                        then {x_10743} else {
+                                          let {fma_res_10746 : f32} =
+                                            apply fma32(f_10738, x_10743, x_10744)
+                                            : {f32}
+                                          in {fma_res_10746}
+                                        }
+                                        : {f32}
+                                      in {defunc_1_f_res_10745})
+                              in {defunc_1_map_res_10742})
+                      return {returns defunc_2_map_res_10730}
+                    }
+                  in {gaussian_elimination_res_10689}
+                } else {
+                  let {gaussian_elimination_res_10747 : [k_8645][n_8646][dyn_concat_to_arg_9327]f32} =
+                    if <equiv> intra_suff_and_fits_10683
+                    then {
+                      let {gaussian_elimination_res_10748 : [k_8645][n_8646][dyn_concat_to_arg_9327]f32} =
+                        #{index_certs_10663, index_certs_10667}
+                        segmap(group; #groups=k_8645; groupsize=computed_group_size_10677)
+                        (gtid_10749 < k_8645) (~phys_tid_10750) : {[n_8646][dyn_concat_to_arg_9327]f32} {
+                          let {defunc_2_reduce_comm_res_10757 : f32,
+                               defunc_2_reduce_comm_res_10758 : i64} =
+                            segred(thread; #groups=k_8645; groupsize=computed_group_size_10677)
+                            (gtid_10759 < n_8646) (~phys_tid_10760)
+                            ({0.0f32, 0i64},
+                            ,
+                            commutative \ {x_10761 : f32, x_10762 : i64, x_10763 : f32, x_10764 : i64}
+                              : {f32,
+                                 i64} ->
+                              let {cond_10765 : bool} = lt32(x_10761, x_10763)
+                              let {defunc_1_op_res_10766 : f32,
+                                   defunc_1_op_res_10767 : i64} =
+                                if  cond_10765
+                                then {x_10763, x_10764} else {
+                                  let {cond_10768 : bool} = lt32(x_10763, x_10761)
+                                  let {defunc_1_op_res_f_res_10769 : f32,
+                                       defunc_1_op_res_f_res_10770 : i64} =
+                                    if  cond_10768
+                                    then {x_10761, x_10762} else {
+                                      let {cond_10771 : bool} = slt64(x_10764, x_10762)
+                                      let {defunc_1_op_res_f_res_f_res_10772 : f32} =
+                                        if  cond_10771
+                                        then {x_10763} else {x_10761}
+                                        : {f32}
+                                      let {defunc_1_op_res_f_res_f_res_10773 : i64} =
+                                        if  cond_10771
+                                        then {x_10764} else {x_10762}
+                                        : {i64}
+                                      in {defunc_1_op_res_f_res_f_res_10772, defunc_1_op_res_f_res_f_res_10773}
+                                    }
+                                    : {f32, i64}
+                                  in {defunc_1_op_res_f_res_10769, defunc_1_op_res_f_res_10770}
+                                }
+                                : {f32, i64}
+                              in {defunc_1_op_res_10766, defunc_1_op_res_10767})
+                            : {f32, i64} {
+                              let {x_10775 : f32} =
+                                #{index_certs_10663}
+                                A_expanded_10660[gtid_10749, gtid_10759, i_10659]
+                              let {cond_10776 : bool} = sle64(i_10659, gtid_10759)
+                              let {defunc_1_f_res_10777 : f32} =
+                                if  cond_10776
+                                then {
+                                  let {abs_res_10778 : f32} = fabs32 x_10775
+                                  in {abs_res_10778}
+                                } else {-f32.inf}
+                                : {f32}
+                              return {returns defunc_1_f_res_10777, returns gtid_10759}
+                            }
+                          let {y_10779 : f32} =
+                            #{index_certs_10666}
+                            A_expanded_10660[gtid_10749, i_10659, i_10659]
+                          let {x_10780 : f32} = fsub32(1.0f32, y_10779)
+                          let {x_10781 : bool} = sle64(0i64, defunc_2_reduce_comm_res_10758)
+                          let {y_10782 : bool} = slt64(defunc_2_reduce_comm_res_10758, n_8646)
+                          let {bounds_check_10783 : bool} = logand(x_10781, y_10782)
+                          let {index_ok_10784 : bool} = logand(y_10661, bounds_check_10783)
+                          let {index_certs_10785 : unit} =
+                            assert(index_ok_10784, {"Index [", defunc_2_reduce_comm_res_10758 : i64, ", ", i_10659 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:17:26-31")
+                          let {y_10786 : f32} =
+                            #{index_certs_10785}
+                            A_expanded_10660[gtid_10749, defunc_2_reduce_comm_res_10758, i_10659]
+                          let {f_10787 : f32} = fdiv32(x_10780, y_10786)
+                          let {index_certs_10788 : unit} =
+                            assert(bounds_check_10783, {"Index [", defunc_2_reduce_comm_res_10758 : i64, "] out of bounds for array of shape [", n_8646 : i64, "]."}, "matrix-inversion.fut:18:33-36")
+                          let {defunc_1_map_res_10790 : [dyn_concat_to_arg_9327]f32} =
+                            segmap(thread; #groups=k_8645; groupsize=computed_group_size_10677)
+                            (gtid_10791 < dyn_concat_to_arg_9327) (~phys_tid_10792) : {f32} {
+                              let {x_10793 : f32} =
+                                #{index_certs_10788}
+                                A_expanded_10660[gtid_10749, defunc_2_reduce_comm_res_10758, gtid_10791]
+                              let {x_10794 : f32} =
+                                #{index_certs_10667}
+                                A_expanded_10660[gtid_10749, i_10659, gtid_10791]
+                              let {defunc_1_f_res_10795 : f32} =
+                                apply fma32(f_10787, x_10793, x_10794)
+                                : {f32}
+                              return {returns defunc_1_f_res_10795}
+                            }
+                          let {f_r_10797 : [n_8646]f32} =
+                            segmap(thread; #groups=k_8645; groupsize=computed_group_size_10677)
+                            (gtid_10798 < n_8646) (~phys_tid_10799) : {f32} {
+                              let {index_certs_10805 : unit} =
+                                assert(y_10661, {"Index [", gtid_10798 : i64, ", ", i_10659 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:20:30-35")
+                              let {x_10806 : f32} =
+                                #{index_certs_10805}
+                                A_expanded_10660[gtid_10749, gtid_10798, i_10659]
+                              let {f_10807 : f32} = fmul32(-1.0f32, x_10806)
+                              return {returns f_10807}
+                            }
+                          let {defunc_2_map_res_10821 : [n_8646][dyn_concat_to_arg_9327]f32} =
+                            segmap(thread; #groups=k_8645; groupsize=computed_group_size_10677)
+                            (gtid_10822 < n_8646, gtid_10823 < dyn_concat_to_arg_9327) (~phys_tid_10824) : {f32} {
+                              let {f_10825 : f32} =
+                                f_r_10797[gtid_10822]
+                              let {index_primexp_11033 : bool} = eq_i64(gtid_10822, i_10659)
+                              let {x_10827 : f32} =
+                                defunc_1_map_res_10790[gtid_10823]
+                              let {x_10828 : f32} =
+                                A_expanded_10660[gtid_10749, gtid_10822, gtid_10823]
+                              let {defunc_1_f_res_10829 : f32} =
+                                if  index_primexp_11033
+                                then {x_10827} else {
+                                  let {fma_res_10830 : f32} =
+                                    apply fma32(f_10825, x_10827, x_10828)
+                                    : {f32}
+                                  in {fma_res_10830}
+                                }
+                                : {f32}
+                              return {returns defunc_1_f_res_10829}
+                            }
+                          return {returns defunc_2_map_res_10821}
+                        }
+                      in {gaussian_elimination_res_10748}
+                    } else {
+                      let {defunc_2_reduce_comm_res_10836 : [k_8645]f32,
+                           defunc_2_reduce_comm_res_r_10837 : [k_8645]i64} =
+                        segred(thread; #groups=num_groups_10834; groupsize=segred_group_size_10833)
+                        (gtid_10838 < k_8645, gtid_10839 < n_8646) (~phys_tid_10840)
+                        ({0.0f32, 0i64},
+                        ,
+                        commutative \ {x_10841 : f32, x_10842 : i64, x_10843 : f32, x_10844 : i64}
+                          : {f32,
+                             i64} ->
+                          let {cond_10845 : bool} = lt32(x_10841, x_10843)
+                          let {defunc_1_op_res_10846 : f32,
+                               defunc_1_op_res_10847 : i64} =
+                            if  cond_10845
+                            then {x_10843, x_10844} else {
+                              let {cond_10848 : bool} = lt32(x_10843, x_10841)
+                              let {defunc_1_op_res_f_res_10849 : f32,
+                                   defunc_1_op_res_f_res_10850 : i64} =
+                                if  cond_10848
+                                then {x_10841, x_10842} else {
+                                  let {cond_10851 : bool} = slt64(x_10844, x_10842)
+                                  let {defunc_1_op_res_f_res_f_res_10852 : f32} =
+                                    if  cond_10851
+                                    then {x_10843} else {x_10841}
+                                    : {f32}
+                                  let {defunc_1_op_res_f_res_f_res_10853 : i64} =
+                                    if  cond_10851
+                                    then {x_10844} else {x_10842}
+                                    : {i64}
+                                  in {defunc_1_op_res_f_res_f_res_10852, defunc_1_op_res_f_res_f_res_10853}
+                                }
+                                : {f32, i64}
+                              in {defunc_1_op_res_f_res_10849, defunc_1_op_res_f_res_10850}
+                            }
+                            : {f32, i64}
+                          in {defunc_1_op_res_10846, defunc_1_op_res_10847})
+                        : {f32, i64} {
+                          let {x_10856 : f32} =
+                            #{index_certs_10663}
+                            A_expanded_10660[gtid_10838, gtid_10839, i_10659]
+                          let {cond_10857 : bool} = sle64(i_10659, gtid_10839)
+                          let {defunc_1_f_res_10858 : f32} =
+                            if  cond_10857
+                            then {
+                              let {abs_res_10859 : f32} = fabs32 x_10856
+                              in {abs_res_10859}
+                            } else {-f32.inf}
+                            : {f32}
+                          return {returns defunc_1_f_res_10858, returns gtid_10839}
+                        }
+                      let {index_certs_r_10863 : [k_8645]unit,
+                           f_r_10864 : [k_8645]f32} =
+                        #{index_certs_10663, index_certs_10667}
+                        segmap(thread; #groups=segmap_usable_groups_10862; groupsize=segmap_group_size_10861)
+                        (gtid_10865 < k_8645) (~phys_tid_10866) : {unit, f32} {
+                          let {defunc_2_reduce_comm_res_10868 : i64} =
+                            defunc_2_reduce_comm_res_r_10837[gtid_10865]
+                          let {y_10869 : f32} =
+                            #{index_certs_10666}
+                            A_expanded_10660[gtid_10865, i_10659, i_10659]
+                          let {x_10870 : f32} = fsub32(1.0f32, y_10869)
+                          let {x_10871 : bool} = sle64(0i64, defunc_2_reduce_comm_res_10868)
+                          let {y_10872 : bool} = slt64(defunc_2_reduce_comm_res_10868, n_8646)
+                          let {bounds_check_10873 : bool} = logand(x_10871, y_10872)
+                          let {index_ok_10874 : bool} = logand(y_10661, bounds_check_10873)
+                          let {index_certs_10875 : unit} =
+                            assert(index_ok_10874, {"Index [", defunc_2_reduce_comm_res_10868 : i64, ", ", i_10659 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:17:26-31")
+                          let {y_10876 : f32} =
+                            #{index_certs_10875}
+                            A_expanded_10660[gtid_10865, defunc_2_reduce_comm_res_10868, i_10659]
+                          let {f_10877 : f32} = fdiv32(x_10870, y_10876)
+                          let {index_certs_10878 : unit} =
+                            assert(bounds_check_10873, {"Index [", defunc_2_reduce_comm_res_10868 : i64, "] out of bounds for array of shape [", n_8646 : i64, "]."}, "matrix-inversion.fut:18:33-36")
+                          return {returns index_certs_10878, returns f_10877}
+                        }
+                      let {defunc_1_map2_arg_r_10883 : [k_8645][dyn_concat_to_arg_9327]f32} =
+                        segmap(thread; #groups=segmap_usable_groups_10882; groupsize=segmap_group_size_10881)
+                        (gtid_10885 < k_8645, gtid_slice_10884 < dyn_concat_to_arg_9327) (~phys_tid_10886) : {f32} {
+                          let {index_certs_10888 : unit} =
+                            index_certs_r_10863[gtid_10885]
+                          let {defunc_2_reduce_comm_res_10889 : i64} =
+                            defunc_2_reduce_comm_res_r_10837[gtid_10885]
+                          let {v_10890 : f32} =
+                            #{index_certs_10888}
+                            A_expanded_10660[gtid_10885, defunc_2_reduce_comm_res_10889, gtid_slice_10884]
+                          return {returns v_10890}
+                        }
+                      let {defunc_1_map_res_r_10899 : [k_8645][dyn_concat_to_arg_9327]f32} =
+                        #{index_certs_10663, index_certs_10667}
+                        segmap(thread; #groups=segmap_usable_groups_10898; groupsize=segmap_group_size_10897)
+                        (gtid_10900 < k_8645, gtid_10901 < dyn_concat_to_arg_9327) (~phys_tid_10902) : {f32} {
+                          let {f_10903 : f32} =
+                            f_r_10864[gtid_10900]
+                          let {x_10904 : f32} =
+                            defunc_1_map2_arg_r_10883[gtid_10900, gtid_10901]
+                          let {x_10905 : f32} =
+                            #{index_certs_10667}
+                            A_expanded_10660[gtid_10900, i_10659, gtid_10901]
+                          let {defunc_1_f_res_10906 : f32} =
+                            apply fma32(f_10903, x_10904, x_10905)
+                            : {f32}
+                          return {returns defunc_1_f_res_10906}
+                        }
+                      let {f_r_r_10918 : [k_8645][n_8646]f32} =
+                        #{index_certs_10663, index_certs_10667}
+                        segmap(thread; #groups=segmap_usable_groups_10916; groupsize=segmap_group_size_10915)
+                        (gtid_10919 < k_8645, gtid_10920 < n_8646) (~phys_tid_10921) : {f32} {
+                          let {index_certs_10928 : unit} =
+                            assert(y_10661, {"Index [", gtid_10920 : i64, ", ", i_10659 : i64, "] out of bounds for array of shape [", n_8646 : i64, "][", dyn_concat_to_arg_9327 : i64, "]."}, "matrix-inversion.fut:20:30-35")
+                          let {x_10929 : f32} =
+                            #{index_certs_10928}
+                            A_expanded_10660[gtid_10919, gtid_10920, i_10659]
+                          let {f_10930 : f32} = fmul32(-1.0f32, x_10929)
+                          return {returns f_10930}
+                        }
+                      let {gaussian_elimination_res_10967 : [k_8645][n_8646][dyn_concat_to_arg_9327]f32} =
+                        #{index_certs_10663, index_certs_10667}
+                        segmap(thread; #groups=segmap_usable_groups_10966; groupsize=segmap_group_size_10965)
+                        (gtid_10968 < k_8645, gtid_10969 < n_8646, gtid_10970 < dyn_concat_to_arg_9327) (~phys_tid_10971) : {f32} {
+                          let {f_10972 : f32} =
+                            f_r_r_10918[gtid_10968, gtid_10969]
+                          let {index_primexp_11036 : bool} = eq_i64(gtid_10969, i_10659)
+                          let {x_10974 : f32} =
+                            defunc_1_map_res_r_10899[gtid_10968, gtid_10970]
+                          let {x_10975 : f32} =
+                            A_expanded_10660[gtid_10968, gtid_10969, gtid_10970]
+                          let {defunc_1_f_res_10976 : f32} =
+                            #{index_certs_10663, index_certs_10667}
+                            if  index_primexp_11036
+                            then {x_10974} else {
+                              let {fma_res_10977 : f32} =
+                                apply fma32(f_10972, x_10974, x_10975)
+                                : {f32}
+                              in {fma_res_10977}
+                            }
+                            : {f32}
+                          return {returns defunc_1_f_res_10976}
+                        }
+                      in {gaussian_elimination_res_10967}
+                    }
+                    : {[k_8645][n_8646][dyn_concat_to_arg_9327]f32}
+                  in {gaussian_elimination_res_10747}
+                }
+                : {[k_8645][n_8646][dyn_concat_to_arg_9327]f32}
+              in {gaussian_elimination_res_10684}
+            }
+          let {segmap_usable_groups_10985 : i64} = sdiv_up64(nest_size_10983, segmap_group_size_10984)
+          let {defunc_3_map_res_10986 : [k_8645][n_8646][n_8646]f32} =
+            segmap(thread; #groups=segmap_usable_groups_10985; groupsize=segmap_group_size_10984)
+            (gtid_10989 < k_8645, gtid_slice_10987 < n_8646, gtid_slice_10988 < n_8646) (~phys_tid_10990) : {f32} {
+              let {slice_10992 : i64} = add_nw64(n_8646, gtid_slice_10988)
+              let {v_10993 : f32} =
+                #{index_certs_9353, empty_or_match_cert_9355}
+                gaussian_elimination_res_r_10658[gtid_10989, gtid_slice_10987, slice_10992]
+              return {returns v_10993}
+            }
+          in {defunc_3_map_res_10986}
+        }
+        : {[k_8645][n_8646][n_8646]f32}
+      in {defunc_3_map_res_10994}
+    }
+    : {[k_8645][n_8646][n_8646]f32}
+  in {defunc_3_map_res_9480}
+}
