@@ -100,4 +100,36 @@ remaining code is the \verb|gaussian_elimination| function.
     \label{lst:matrixinv_internals}
 \end{listing}
 
+The benchmarks of shape \texttt{[k][n][n]} range from $k = 64, \ldots , 1048576$
+and $n = 128, \ldots , 1$ and are set up such that $k \cdot n \cdot n =
+1048576$. I preformed the benchmarks with no tuning file and with an
+auto-generated tuning file and plotted the results, which are shown
+in~\cref{fig:matrix_inv_bench}. The benchmarks were done with Futhark version
+0.21.4 on the \verb|gpu04-diku-apl| machine. You should be able to run (and
+plot) the benchmarks by just running \verb|make| in the \verb|code-handout/|
+directory.
+
+The performance of the untuned version is similar to that of the tuned version
+for most of the input sizes, but for inputs where $k = 2^{12}$ to $k=2^{16}$ the
+tuned version is a good bit faster (speedup of \textapprox 3x). The reason
+for this can be found by looking at the result of the auto-tuning:
+\begin{Verbatim}
+Result of autotuning:
+main.suff_intra_par_1=4
+main.suff_intra_par_3=4
+main.suff_outer_par_0=64
+main.suff_outer_par_2=256
+\end{Verbatim}
+That \verb|suff_intra_par_1| and \verb|suff_intra_par_1| are equal to 4 suggests
+that when $n=4$ (in which case $k=2^{16}$) the tuned version will use a
+different strategy to the untuned version, which explains the speedup at $k =
+2^{16}$.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.8\textwidth]{matrix-inversion}
+    \caption{Matrix inversion benchmarks, tuned and untuned.}
+    \label{fig:matrix_inv_bench}
+\end{figure}
+
 \end{document}
