@@ -1,15 +1,15 @@
 -- Benchmarks
 -- ==
 -- entry: main
--- random input { [1][1024][1024]f32 }
--- random input { [4][512][512]f32   }
--- random input { [16][256][256]f32  }
 -- random input { [64][128][128]f32  }
 -- random input { [256][64][64]f32   }
 -- random input { [1024][32][32]f32  }
 -- random input { [4096][16][16]f32  }
 -- random input { [16384][8][8]f32   }
 -- random input { [65536][4][4]f32   }
+-- random input { [262144][2][2]f32  }
+-- random input { [1048576][1][1]f32 }
+
 
 def argmax arr =
   reduce_comm (\(a,i) (b,j) ->

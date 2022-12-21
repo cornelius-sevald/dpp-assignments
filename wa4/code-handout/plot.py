@@ -34,11 +34,11 @@ tuned_runtimes = list([ np.mean(tuned_measurements['[{}][{}][{}]f32'.format(k,n,
 fig, ax1 = plt.subplots()
 untuned_runtime_plot = ax1.plot(ks, untuned_runtimes, 'b-', label='Untuned runtime')
 tuned_runtime_plot = ax1.plot(ks, tuned_runtimes, 'g-', label='Tuned runtime')
-ax1.set_xlabel('Number of matrices (same # of elements in total)')
+ax1.set_xlabel('Number of matrices')
 ax1.set_ylabel('Runtime (ms)', color='k')
 ax1.tick_params('y', colors='k')
 plt.xticks(ks, rotation='vertical')
-ax1.semilogx(base=2)
+ax1.set_xscale('log', basex=2) 
 
 plots = untuned_runtime_plot + tuned_runtime_plot
 labels = [p.get_label() for p in plots]
